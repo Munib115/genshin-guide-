@@ -112,8 +112,10 @@ export default function LiveChat() {
         if (error) throw error;
         setMessages(data || []);
       } catch (err) {
-        console.error("Fetch messages error:", err);
-        setErrorText("Could not fetch messages. Check if the table 'messages' is created.");
+        console.error("Fetch messages error details:", err?.message || err, err);
+        setErrorText(
+          `Could not fetch messages: ${err?.message || "Verify your connection settings."} (Hint: Make sure the 'messages' table exists in your Supabase dashboard).`
+        );
       } finally {
         setLoadingMessages(false);
       }
