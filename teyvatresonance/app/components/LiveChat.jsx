@@ -215,8 +215,8 @@ export default function LiveChat() {
       if (error) throw error;
       setMessageText("");
     } catch (err) {
-      console.error("Error sending message:", err);
-      setErrorText("Failed to send message. Make sure the table rules allow public writes.");
+      console.error("Error sending message details:", err?.message || err, err);
+      setErrorText(`Failed to send message: ${err?.message || "Verify your database write policies."}`);
     }
   };
 
