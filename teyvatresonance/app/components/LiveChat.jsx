@@ -93,35 +93,36 @@ export default function LiveChat() {
     }
   }, [supabaseUrl, supabaseAnonKey]);
 
+  const fetchMessages = async () => {
+    if (!supabaseClient) return;
+    setLoadingMessages(true);
+    setErrorText("");
+    try {
+      const { data, error } = await supabaseClient
+        .from("messages")
+        .select("*")
+        .order("created_at", { ascending: true })
+        .limit(50);
+
+      if (error) throw error;
+      setMessages(data || []);
+    } catch (err) {
+      console.error("Fetch messages error details:", err?.message || err, err);
+      setErrorText(
+        `Could not fetch messages: ${err?.message || "Verify your connection settings."} (Hint: Make sure the 'messages' table exists in your Supabase dashboard).`
+      );
+    } finally {
+      setLoadingMessages(false);
+    }
+  };
+
   // 5. Fetch Messages & Setup Real-time listener
   useEffect(() => {
     if (!supabaseClient) return;
 
+    fetchMessages();
+
     let channel = null;
-
-    async function fetchInitialMessages() {
-      setLoadingMessages(true);
-      setErrorText("");
-      try {
-        const { data, error } = await supabaseClient
-          .from("messages")
-          .select("*")
-          .order("created_at", { ascending: true })
-          .limit(50);
-
-        if (error) throw error;
-        setMessages(data || []);
-      } catch (err) {
-        console.error("Fetch messages error details:", err?.message || err, err);
-        setErrorText(
-          `Could not fetch messages: ${err?.message || "Verify your connection settings."} (Hint: Make sure the 'messages' table exists in your Supabase dashboard).`
-        );
-      } finally {
-        setLoadingMessages(false);
-      }
-    }
-
-    fetchInitialMessages();
 
     // Subscribe to new inserts
     try {
@@ -203,16 +204,27 @@ export default function LiveChat() {
     if (!trimmedMsg) return;
 
     try {
-      const { error } = await supabaseClient.from("messages").insert([
-        {
-          username: username || "Anonymous",
-          message: trimmedMsg,
-          avatar: selectedAvatar,
-          game_tag: gameTag,
-        },
-      ]);
+      const { data, error } = await supabaseClient
+        .from("messages")
+        .insert([
+          {
+            username: username || "Anonymous",
+            message: trimmedMsg,
+            avatar: selectedAvatar,
+            game_tag: gameTag,
+          },
+        ])
+        .select();
 
       if (error) throw error;
+
+      if (data && data.length > 0) {
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === data[0].id)) return prev;
+          return [...prev, data[0]];
+        });
+      }
+
       setMessageText("");
     } catch (err) {
       console.error("Error sending message details:", err?.message || err, err);
@@ -428,7 +440,17 @@ export default function LiveChat() {
           {/* Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--hairline-strong)", paddingBottom: "var(--spacing-sm)" }}>
             <h3 className="heading-sm" style={{ color: "white" }}>GLOBAL REEF CHAT</h3>
-            <span className="caption-xs" style={{ color: "var(--primary)" }}>REAL-TIME PUBLIC FEED</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <button 
+                type="button" 
+                onClick={fetchMessages} 
+                className="btn btn-outline-on-dark" 
+                style={{ padding: "2px 8px", fontSize: "11px", cursor: "pointer", border: "1px solid var(--hairline-strong)" }}
+              >
+                🔄 REFRESH
+              </button>
+              <span className="caption-xs" style={{ color: "var(--primary)" }}>REAL-TIME PUBLIC FEED</span>
+            </div>
           </div>
 
           {/* Error display */}
