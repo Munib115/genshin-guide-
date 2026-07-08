@@ -1,75 +1,53 @@
-# TeyvatResonance PK - Genshin & Wuthering Waves Character Guide
+# TeyvatResonance PK (Next.js Serverless Edition)
 
-TeyvatResonance PK is a premium, fast, and SEO-optimized guide website dedicated to Genshin Impact and Wuthering Waves players in Pakistan. The design system is based on the technical, engineering-grade **NVIDIA layout style guide** (2px borders, deep black panels, paper-white body grid, brand green `#76b900` accents, and signature 12x12px green corner squares).
+A high-performance, purely serverless character guide portal for **Genshin Impact** and **Wuthering Waves** players in Pakistan. 
 
-This application runs a full **Node.js Express backend** connected to a **PostgreSQL** database to store and serve the character guide data, featuring an automatic client-side static fallback.
-
----
-
-## Technical Features
-
-1. **Character Guide Engine**: Guides for 20 meta characters (10 Genshin, 10 Wuthering Waves) detailing elements, weapons, roles, best gear, team structures, and Pakistani network optimization tips.
-2. **On-Page & Technical SEO**: Semantic HTML5 tags, descriptive meta tags, custom XML sitemaps, robots.txt, and advanced JSON-LD structured schemas to ensure fast indexing on search engines.
-3. **Pakistan ISP Latency Simulator**: Interactive ping tool that simulates latencies to Asian and European servers across popular local networks (StormFiber, PTCL Broadband, Nayatel, Transworld Home) with network optimization advice.
-4. **PostgreSQL Database with Auto-Seeding**: The backend server automatically generates the tables and seeds the character database on start.
-5. **CORS & Offline Fallback**: If the Node.js server goes offline, the frontend automatically falls back to `js/database.js`, avoiding empty screens.
+Developed following the strict CAD outline in `DESIGN.md` (monochrome theme, 2px borders, signature green 12x12px corners, square thumbnails, zero AI sparkles or storm logos) and optimized for low-latency recommendations across StormFiber, PTCL, Transworld, and mobile cellular networks.
 
 ---
 
-## Setup & Running Guide
+## Key Features
 
-### Prerequisite
-Make sure you have [Node.js](https://nodejs.org/) and [PostgreSQL](https://www.postgresql.org/) installed on your machine.
+1. **Purely Serverless Architecture**:
+   - Zero database installation required. You do not need to install, create, or configure any PostgreSQL instances.
 
-### 1. Install Node.js Dependencies
-Navigate to the directory and run:
-```bash
-npm install
-```
+2. **100% Client-Side Persistence (`localStorage`)**:
+   - All your favorite character bookmarks and custom build notes (e.g. *\"My Jiyan is level 80, Helios Cleaver R5, 55/150 Crit\"*) are written instantly to `localStorage`. This is 100% offline-stable, extremely fast, and persists across browser refreshes.
 
-### 2. Configure PostgreSQL Connection
-1. Open your PostgreSQL GUI client (like pgAdmin or psql shell) and create a database named `teyvatresonance`:
-   ```sql
-   CREATE DATABASE teyvatresonance;
+3. **Dynamic Client Roster Loading**:
+   - **Genshin Impact:** On page load, the app dynamically fetches the entire playable list of **85+ Genshin Impact characters** directly from the free community API (`https://genshin.jmp.blue/characters/all`).
+   - **Wuthering Waves:** Full pre-configured roster of **all 23 playable resonators** loaded statically with builds, recommended gear, and teams.
+
+4. **Interactive Maps Integration**:
+   - Includes full embedded interactive maps for both games using AppSample's layout interfaces. Toggled instantly through the main navigation bar.
+
+5. **Local Navigation Fix**:
+   - Removed all `href="/"` links which trigger the browser's directory index when viewed as local static files. All local links now use safe relative routes and anchors (`#`).
+
+---
+
+## Technical Setup Instructions
+
+### Prerequisites
+- **Node.js** (v18 or higher recommended)
+
+### Install & Run
+1. Open a terminal inside the `teyvatresonance/` folder and run:
+   ```bash
+   npm install
    ```
-2. Open the `.env` file in the project directory:
-   ```env
-   PGUSER=postgres
-   PGHOST=localhost
-   PGDATABASE=teyvatresonance
-   PGPASSWORD=your_postgres_password_here
-   PGPORT=5432
-   PORT=5000
+2. Start the development server:
+   ```bash
+   npm run dev
    ```
-   Replace `your_postgres_password_here` with your actual local PostgreSQL user password.
-
-### 3. Start the Backend Server
-Run the startup command:
-```bash
-npm run start
-```
-Upon launching, the server will output:
-```text
-Connecting to PostgreSQL database...
-Database table structure checked/created successfully.
-Database is empty. Seeding character guide entries...
-Successfully seeded 20 character entries!
-TeyvatResonance PK backend running on http://localhost:5000
-```
-
-### 4. Run the Website Frontend
-- Simply open the [index.html](file:///c:/Users/Munib%20Raza/OneDrive/Desktop/games%20info/index.html) file directly in your web browser.
-- It will automatically fetch data from `http://localhost:5000/api/characters`.
-- If the server is offline, it will run using the static fallback dataset seamlessly!
+3. Open your browser and navigate to:
+   ```text
+   http://localhost:3000
+   ```
 
 ---
 
-## File Organization
-*   `index.html` — Layout entrypoint with meta tags, sitemaps and schema references.
-*   `index.css` — Core stylesheet carrying design system variables, grids, and modal animations.
-*   `server.js` — Express backend server handling PostgreSQL table migration, auto-seeding, and endpoints.
-*   `package.json` — Backend project configurations.
-*   `.env` — Database credential configurations.
-*   `js/database.js` — Static database fallback file.
-*   `js/app.js` — Frontend UI controller, search logic, drawer actions, and ISP ping tester.
-*   `sitemap.xml` & `robots.txt` — Technical SEO files.
+## File System Structure
+- **Pages & Entrypoint**: `app/page.js`, `app/layout.js`, `app/globals.css`
+- **React Components**: `app/components/CharacterCard.jsx`, `app/components/ModalDrawer.jsx`, `app/components/PingSimulator.jsx`, `app/components/InteractiveMaps.jsx`
+- **Static Dataset**: `app/data/characters.js`
