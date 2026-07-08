@@ -1,7 +1,127 @@
 export const characterDatabase = [
   // ==========================================
-  // GENSHIN IMPACT CHARACTERS (10)
+  // GENSHIN IMPACT CHARACTERS (13)
   // ==========================================
+  {
+    id: "mualani",
+    title: "Splish-Splash Wavechaser",
+    gender: "Female",
+    nation: "Natlan",
+    affiliation: "People of the Springs",
+    birthday: "August 18",
+    constellation: "Phoca Neomonachus",
+    history: "A well-known guide in Natlan and a member of the People of the Springs tribe. She runs a shop for water sports equipment and is renowned for her surfing skills across the nation of Pyro.",
+    name: "Mualani",
+    game: "Genshin Impact",
+    rarity: 5,
+    element: "Hydro",
+    weapon: "Catalyst",
+    role: "Main DPS",
+    description: "A professional guide from Natlan's People of the Springs who surfs on her Sharky Surfboard, dealing massive Hydro damage based on her Max HP.",
+    icon: "https://genshin.jmp.blue/characters/mualani/icon",
+    splash: "https://genshin.jmp.blue/characters/mualani/gacha-splash",
+    bestWeapon: {
+      name: "Surf's Up",
+      rarity: 5,
+      details: "Signature weapon. Increases Max HP and Normal Attack DMG, synergizing perfectly with her shark bite attacks."
+    },
+    f2pWeapon: {
+      name: "Ring of Yaxche (F2P)",
+      rarity: 4,
+      details: "Craftable Natlan weapon. Provides HP% and boosts Normal Attack damage based on Max HP."
+    },
+    bestArtifacts: {
+      set: "Obsidian Codex (4-Piece)",
+      mainStats: "Sands: HP% | Goblet: Hydro DMG | Circlet: Crit DMG",
+      subStats: "Crit DMG > HP% > Elemental Mastery > Crit Rate"
+    },
+    bestEchoes: null,
+    teamComps: [
+      { name: "Mualani Vape", members: ["Mualani", "Xiangling", "Emilie", "Zhongli"] },
+      { name: "F2P Vape", members: ["Mualani", "Xiangling", "Sucrose", "Kachina"] }
+    ],
+    pakistaniTips: "Since Mualani relies on riding her shark and hitting targets accurately, play carefully if you experience packet loss, as missing a fully stacked shark bite will cost a lot of DPS."
+  },
+  {
+    id: "arlecchino",
+    title: "Dire Balemoon",
+    gender: "Female",
+    nation: "Snezhnaya (Cryo Nation)",
+    affiliation: "Fatui",
+    birthday: "August 22",
+    constellation: "Ignis Purgatorius",
+    history: "Arlecchino, also known as \"The Knave,\" is the Fourth of the Eleven Fatui Harbingers. She runs the House of the Hearth, an orphanage in Snezhnaya that raises children to become Fatui soldiers. Cold, calculating, and exceptionally powerful, she strikes fear into the hearts of both her enemies and her subordinates.",
+    name: "Arlecchino",
+    game: "Genshin Impact",
+    rarity: 5,
+    element: "Pyro",
+    weapon: "Polearm",
+    role: "Main DPS",
+    description: "The Knave, Fourth of the Fatui Harbingers. She wields a scythe and utilizes a unique Bond of Life mechanic to deal devastating Pyro damage.",
+    icon: "https://genshin.jmp.blue/characters/arlecchino/icon",
+    splash: "https://genshin.jmp.blue/characters/arlecchino/gacha-splash",
+    bestWeapon: {
+      name: "Crimson Moon's Semblance",
+      rarity: 5,
+      details: "Signature weapon. Grants a Bond of Life and massive damage bonuses, shifting form into a scythe when equipped by her."
+    },
+    f2pWeapon: {
+      name: "White Tassel (F2P)",
+      rarity: 3,
+      details: "A 3-star weapon found in Liyue chests. Surprisingly strong on her due to the massive Normal Attack DMG bonus."
+    },
+    bestArtifacts: {
+      set: "Fragment of Harmonic Whimsy (4-Piece)",
+      mainStats: "Sands: ATK% | Goblet: Pyro DMG | Circlet: Crit Rate / Crit DMG",
+      subStats: "Crit Rate > Crit DMG > ATK% > Elemental Mastery"
+    },
+    bestEchoes: null,
+    teamComps: [
+      { name: "Overload Knave", members: ["Arlecchino", "Chevreuse", "Fischl", "Yae Miko"] },
+      { name: "Vape Father", members: ["Arlecchino", "Yelan", "Bennett", "Zhongli"] }
+    ],
+    pakistaniTips: "Arlecchino cannot be healed by teammates during combat due to her passive. On high-ping connections, bringing a strong shielder like Zhongli or Layla is crucial so you don't get taken out before you can burst to heal yourself."
+  },
+  {
+    id: "ganyu",
+    title: "Plenilune Gaze",
+    gender: "Female",
+    nation: "Liyue",
+    affiliation: "Yuehai Pavilion",
+    birthday: "December 2",
+    constellation: "Sinae Unicornis",
+    history: "Ganyu is a half-qilin Adeptus who serves as the general secretary of the Liyue Qixing. She fought alongside Rex Lapis during the Archon War and has dedicated herself to the prosperity of Liyue for thousands of years.",
+    name: "Ganyu",
+    game: "Genshin Impact",
+    rarity: 5,
+    element: "Cryo",
+    weapon: "Bow",
+    role: "Main DPS / Sub-DPS",
+    description: "The secretary to the Liyue Qixing. The blood of both human and illuminated beast flows within her veins. Known for her devastating Frostflake Arrows.",
+    icon: "https://genshin.jmp.blue/characters/ganyu/icon",
+    splash: "https://genshin.jmp.blue/characters/ganyu/gacha-splash",
+    bestWeapon: {
+      name: "Amos' Bow",
+      rarity: 5,
+      details: "Signature weapon. Massively increases Charged Attack DMG, perfectly synergizing with her Frostflake Arrows."
+    },
+    f2pWeapon: {
+      name: "Prototype Crescent (F2P)",
+      rarity: 4,
+      details: "Craftable weapon. Hitting weak points significantly boosts ATK. Excellent free option for aim-shot playstyles."
+    },
+    bestArtifacts: {
+      set: "Wanderer's Troupe (4-Piece)",
+      mainStats: "Sands: ATK% | Goblet: Cryo DMG | Circlet: Crit Rate / Crit DMG",
+      subStats: "Crit DMG > Crit Rate > ATK% > Elemental Mastery"
+    },
+    bestEchoes: null,
+    teamComps: [
+      { name: "Morgana (Freeze)", members: ["Ganyu", "Mona", "Venti", "Diona"] },
+      { name: "Melt Ganyu", members: ["Ganyu", "Zhongli", "Xiangling", "Bennett"] }
+    ],
+    pakistaniTips: "For Pakistani players with higher ping, Freeze teams (Morgana) are highly recommended over Melt. Missing a Melt charged shot due to lag is punishing, whereas Freeze keeps enemies immobilized."
+  },
   {
     id: "furina",
     title: "Endless Solo of Solitude",
