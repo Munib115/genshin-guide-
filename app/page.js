@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { characterDatabase } from "./data/characters";
 import CharacterCard from "./components/CharacterCard";
 import ModalDrawer from "./components/ModalDrawer";
@@ -26,6 +26,9 @@ export default function Home() {
   // Modal Drawer State
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  const menuRef = useRef(null);
 
   // 1. Initialize character list (local static) and load extra Genshin characters from public API
   useEffect(() => {
@@ -115,6 +118,19 @@ export default function Home() {
     if (localNotes) setNotes(JSON.parse(localNotes));
   }, []);
 
+  // 2b. Close mobile menu on outside clicks
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMobileMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // Handle favorite toggle
   const handleToggleFavorite = (id) => {
     const nextVal = !favorites[id];
@@ -195,7 +211,7 @@ export default function Home() {
       {/* 2. Primary Navigation */}
       <nav className="primary-nav">
         <div className="container">
-          <a href="#" className="logo" onClick={() => setActiveSection("guides")}>
+          <a href="#" className="logo" onClick={() => { setActiveSection("guides"); setMobileMenuOpen(false); }}>
             <div className="logo-block" />
             TEYVATRESONANCE<span>PK</span>
           </a>
@@ -255,6 +271,74 @@ export default function Home() {
             <span className="caption-xs" style={{ color: "var(--primary)", border: "1px solid var(--primary)", padding: "4px 8px" }}>
               V2.1 STATIC
             </span>
+          </div>
+
+          {/* Three dots mobile menu toggle */}
+          <div className="mobile-menu-container" ref={menuRef}>
+            <button 
+              className="mobile-menu-btn"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle Navigation Menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              &#8942;
+            </button>
+            {mobileMenuOpen && (
+              <ul className="mobile-nav-links">
+                <li>
+                  <a 
+                    href="#guides" 
+                    className={activeSection === "guides" ? "active" : ""}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("guides");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    CHARACTER GUIDES
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#optimizer" 
+                    className={activeSection === "optimizer" ? "active" : ""}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("optimizer");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    DEVICE OPTIMIZER
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#maps" 
+                    className={activeSection === "maps" ? "active" : ""}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("maps");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    INTERACTIVE MAPS
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#chat" 
+                    className={activeSection === "chat" ? "active" : ""}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("chat");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    LIVE CHAT
+                  </a>
+                </li>
+              </ul>
+            )}
           </div>
         </div>
       </nav>

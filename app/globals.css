@@ -1942,24 +1942,24 @@ html, body {
 
   /* Primary Navigation */
   .primary-nav {
-    height: auto;
-    padding: var(--spacing-md) 0;
+    height: 64px !important;
+    padding: 0 !important;
   }
   .primary-nav .container {
-    flex-direction: column;
-    gap: var(--spacing-md);
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    gap: 0 !important;
   }
   .nav-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--spacing-md);
-    padding: 0;
-  }
-  .nav-links a {
-    font-size: 13px;
+    display: none !important;
   }
   .nav-actions {
-    display: none; /* Hide static text to save space */
+    display: none !important;
+  }
+  .mobile-menu-container {
+    display: block !important;
   }
 
   /* Hero Section */
@@ -2046,5 +2046,70 @@ html, body {
   .hero-title {
     font-size: 28px !important;
   }
+}
+
+/* ==========================================================================
+   MOBILE KEBAB MENU STYLE (THREE DOTS DROPDOWN)
+   ========================================================================== */
+
+.mobile-menu-container {
+  display: none;
+  position: relative;
+}
+
+.mobile-menu-btn {
+  background: none;
+  border: 1px solid var(--hairline-strong);
+  color: var(--on-dark);
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: var(--rounded-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.mobile-menu-btn:hover, .mobile-menu-btn:focus {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.mobile-nav-links {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  background-color: var(--surface-elevated);
+  border: 2px solid var(--primary);
+  list-style: none;
+  padding: var(--spacing-sm) 0;
+  width: 220px;
+  z-index: 200;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  border-radius: var(--rounded-sm);
+}
+
+.mobile-nav-links li {
+  width: 100%;
+}
+
+.mobile-nav-links a {
+  display: block;
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--on-dark-mute);
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-left: 3px solid transparent;
+  transition: var(--transition-fast);
+  text-align: left;
+}
+
+.mobile-nav-links a:hover, .mobile-nav-links a.active {
+  color: var(--on-dark);
+  background-color: rgba(118, 185, 0, 0.1);
+  border-left-color: var(--primary);
 }
 
