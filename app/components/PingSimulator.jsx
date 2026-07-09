@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const ispData = {
   stormfiber: {
@@ -63,13 +63,23 @@ export default function PingSimulator() {
   const [selectedIsp, setSelectedIsp] = useState("stormfiber");
   const [pinging, setPinging] = useState(false);
   const [pingResults, setPingResults] = useState(null);
+  const timeoutRef = useRef(null);
+
+  // Clear any pending simulation timer if the component unmounts
+  // (the Guides section remounts on nav switch), avoiding setState-after-unmount.
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const handleRunPing = () => {
     setPinging(true);
     setPingResults(null);
-    
+
     // Simulate traceroute latency calculation
-    setTimeout(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
       setPinging(false);
       setPingResults(ispData[selectedIsp]);
     }, 1800);
@@ -149,7 +159,7 @@ export default function PingSimulator() {
                 {pingResults.wuwaEurope} ms
               </span>
             </div>
-            <div style={{ marginTop: "12px", borderTop: "1px solid rgba(0,0,0,0.05)", paddingTop: "8px" }}>
+            <div style={{ marginTop: "12px", borderTop: "1px solid var(--glass-border)", paddingTop: "8px" }}>
               <p className="caption-sm">
                 <strong>Link Stability:</strong> {pingResults.stability}
               </p>
@@ -160,7 +170,7 @@ export default function PingSimulator() {
           </div>
         ) : (
           <div style={{ textAlign: "center", color: "var(--mute)" }}>
-            <p className="body-sm">Click "Run Ping Simulation" to start trace routes.</p>
+            <p className="body-sm">Click &quot;Run Ping Simulation&quot; to start trace routes.</p>
           </div>
         )}
       </div>

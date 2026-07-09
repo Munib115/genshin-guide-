@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Gacha Ustaad">
+  <defs>
+    <linearGradient id="gu-grad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4CC9F0"/>
+      <stop offset="0.5" stop-color="#8B7CFF"/>
+      <stop offset="1" stop-color="#E45CFF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark tile + gradient hairline (matches the rest of the icon set) -->
+  <rect x="3" y="3" width="58" height="58" rx="16" fill="#0A0E1A"/>
+  <rect x="3.75" y="3.75" width="56.5" height="56.5" rx="15.25" fill="none" stroke="url(#gu-grad)" stroke-opacity="0.55" stroke-width="1.5"/>
+
+  <!-- Cap band (the part that hugs the head) — drawn first so the board sits on top -->
+  <path d="M18 29 L18 40 Q18 47 32 47 Q46 47 46 40 L46 29 Z" fill="#2C2557"/>
+
+  <!-- Mortarboard (the flat square top, seen at an angle) -->
+  <path d="M32 13 L58 25 L32 37 L6 25 Z" fill="url(#gu-grad)"/>
+  <!-- Top-facet highlight for a bit of 3D -->
+  <path d="M32 13 L58 25 L32 27 L6 25 Z" fill="#ffffff" fill-opacity="0.14"/>
+
+  <!-- Center button -->
+  <circle cx="32" cy="25" r="2.6" fill="#0A0E1A"/>
+  <circle cx="32" cy="25" r="1.2" fill="#7CE0FF"/>
+
+  <!-- Tassel cord draped over the right corner -->
+  <path d="M32 25 L54 26 L52 40" fill="none" stroke="#7CE0FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Tassel end as a gacha "wish" spark -->
+  <path d="M52 38 C52.8 42 53.8 43.2 57 44 C53.8 44.8 52.8 46 52 49.5 C51.2 46 50.2 44.8 47 44 C50.2 43.2 51.2 42 52 38 Z" fill="url(#gu-grad)"/>
+</svg>

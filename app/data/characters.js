@@ -403,46 +403,6 @@ export const characterDatabase = [
     pakistaniTips: "Highly optimized for mobile players. Neuvillette's charged attack is an auto-sustaining laser beam, making him very friendly for budget devices and fluctuating ping in Pakistan. Pair him with craftable Prototype Amber. Make sure to run different elemental characters to trigger his Hydro Draconic Glory stacks."
   },
   {
-    id: "arlecchino",
-    title: "The Knave",
-    gender: "Female",
-    nation: "Snezhnaya",
-    affiliation: "Fatui Harbingers / House of the Hearth",
-    birthday: "August 22",
-    constellation: "Ignis Purgatorius",
-    history: "Arlecchino, known as 'The Knave', is the Fourth of the Fatui Harbingers and the current 'Father' of the House of the Hearth, an orphanage that raises child operatives for Snezhnaya. Cold, calculating, but fiercely protective of her children, she overthrew the previous cruel director to create a safe haven for her wards while pursuing her own agendas in Teyvat.",
-    name: "Arlecchino",
-    game: "Genshin Impact",
-    rarity: 5,
-    element: "Pyro",
-    weapon: "Polearm",
-    role: "Main DPS",
-    description: "The Knave, Fourth of the Fatui Harbingers. She clears her enemies using the Bond of Life mechanic, dealing high Pyro damage.",
-    icon: "https://genshin.jmp.blue/characters/arlecchino/icon",
-    splash: "https://genshin.jmp.blue/characters/arlecchino/gacha-splash",
-    bestWeapon: {
-      name: "Crimson Moon's Semblance",
-      rarity: 5,
-      details: "Signature weapon. Grants Crit Rate, increases Bond of Life, and provides additional damage buffs when the bond is active."
-    },
-    f2pWeapon: {
-      name: "White Tassel (F2P)",
-      rarity: 3,
-      details: "A 3-star chest exclusive weapon from Liyue. Boosts Crit Rate and dramatically increases Normal Attack DMG. Highly effective budget weapon."
-    },
-    bestArtifacts: {
-      set: "Fragment of Harmonic Whims (4-Piece)",
-      mainStats: "Sands: ATK% | Goblet: Pyro DMG | Circlet: Crit Rate / Crit DMG",
-      subStats: "Crit Rate > Crit DMG > ATK% > Reference"
-    },
-    bestEchoes: null,
-    teamComps: [
-      { name: "Overloaded Pyro", members: ["Arlecchino", "Chevreuse", "Fischl", "Bennett"] },
-      { name: "Arlecchino Vape", members: ["Arlecchino", "Xingqiu", "Yelan", "Zhongli"] }
-    ],
-    pakistaniTips: "Arlecchino cannot be healed by teammates during combat due to her Bond of Life mechanic. Therefore, if you suffer from lag spikes on Pakistani ISPs, run her with a strong shielder like Zhongli or Layla to avoid getting defeated. For F2P, use the 3-star White Tassel (keep copies locked)."
-  },
-  {
     id: "bennett",
     title: "Trial by Fire",
     gender: "Male",

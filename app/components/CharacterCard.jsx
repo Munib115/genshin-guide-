@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
+import { toWebP } from "../utils/image";
 
-export default function CharacterCard({ character, onSelect, isFavorite, onToggleFavorite }) {
-  const { name, game, rarity, element, weapon, role, description, icon, splash } = character;
+export default function CharacterCard({ character, onSelect, isFavorite, onToggleFavorite, index }) {
+  const { name, game, rarity, element, weapon, role, description, icon, splash, upcoming } = character;
 
   const handleFavoriteClick = (e) => {
     e.stopPropagation(); // Avoid triggering card selection
@@ -11,37 +12,47 @@ export default function CharacterCard({ character, onSelect, isFavorite, onToggl
   };
 
   // Convert element name to lower-case for class mapping
-  const elementClass = element ? `element-${element.toLowerCase()}` : "";
+  const elementLower = element ? element.toLowerCase() : "";
+  const elementClass = element ? `element-${elementLower}` : "";
+  const cardElementClass = element ? `card-element-${elementLower}` : "";
 
   return (
     <div 
-      className="character-card animate-in" 
+      className={`character-card animate-in ${cardElementClass}`} 
       onClick={() => onSelect(character)}
-      style={{ animationDelay: "50ms" }} // subtle delay cascade can be set in CSS or inline
+      style={{ animationDelay: `${(index || 0) * 45}ms` }}
     >
       {/* Signature NVIDIA 12x12px Green Corner Square */}
       <div className="corner-square" />
 
       {/* Rarity & Game Badge Header */}
       <div className="card-header-meta">
-        <span className={`badge-tag rarity-${rarity}`}>
-          {rarity}-STAR
-        </span>
+        {upcoming ? (
+          <span className="badge-tag badge-upcoming">UPCOMING</span>
+        ) : (
+          <span className={`badge-tag rarity-${rarity}`}>
+            {rarity}-STAR
+          </span>
+        )}
         <span className="game-label">{game}</span>
       </div>
 
       {/* Square aspect ratio image wrapper (Fix for cropped faces) */}
       <div className="card-image-wrapper">
-        <img 
-          src={splash || icon || "https://placehold.co/200x200/1a1a1a/76b900?text=Avatar"} 
-          alt={name} 
+        <img
+          src={toWebP(splash || icon || "https://placehold.co/400x400/12161f/4CC9F0?text=Avatar")}
+          alt={name}
           className="card-image"
+          loading="lazy"
           referrerPolicy="no-referrer"
           onError={(e) => {
-            if (splash && icon && splash !== icon && !e.target.src.endsWith(icon)) {
-              e.target.src = icon;
-            } else {
-              e.target.src = "https://placehold.co/200x200/1a1a1a/76b900?text=" + encodeURIComponent(name);
+            const img = e.target;
+            // 1) try the icon, 2) fall back to a placeholder once, then stop (no re-loop)
+            if (splash && icon && splash !== icon && !img.src.endsWith(icon) && !img.dataset.ph) {
+              img.src = toWebP(icon);
+            } else if (!img.dataset.ph) {
+              img.dataset.ph = "1";
+              img.src = "https://placehold.co/400x400/12161f/4CC9F0?text=" + encodeURIComponent(name);
             }
           }}
         />

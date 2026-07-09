@@ -5,6 +5,11 @@ import React, { useState } from "react";
 export default function InteractiveMaps() {
   const [activeMap, setActiveMap] = useState("genshin");
 
+  const mapUrl =
+    activeMap === "genshin"
+      ? "https://genshin-impact-map.appsample.com/"
+      : "https://wuthering-waves-map.appsample.com/";
+
   return (
     <div className="maps-container">
       {/* Tab Switchers */}
@@ -29,9 +34,15 @@ export default function InteractiveMaps() {
           <span className="caption-md" style={{ color: "var(--on-dark)" }}>
             {activeMap === "genshin" ? "TEYVAT MAP VIEWER" : "JINZHOU REGION MAP VIEWER"}
           </span>
-          <span className="caption-xs" style={{ color: "var(--primary)" }}>
-            ● LIVE WEB COMPONENT
-          </span>
+          <a
+            href={mapUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="caption-xs"
+            style={{ color: "var(--primary)" }}
+          >
+            ↗ OPEN FULL MAP
+          </a>
         </div>
 
         <div className="map-iframe-container">

@@ -1,13 +1,34 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { characterDatabase } from "./data/characters";
 import CharacterCard from "./components/CharacterCard";
 import ModalDrawer from "./components/ModalDrawer";
 import PingSimulator from "./components/PingSimulator";
 import InteractiveMaps from "./components/InteractiveMaps";
 import DeviceOptimizer from "./components/DeviceOptimizer";
 import LiveChat from "./components/LiveChat";
+import CharacterChat from "./components/CharacterChat";
+import HeroSpotlight from "./components/HeroSpotlight";
+import { fullRoster } from "./data/roster";
+
+// Brand mark (sparkle) — cyan→magenta gradient, matches the favicon/app icon
+function LogoMark() {
+  return (
+    <svg className="logo-mark" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="guLogoGrad" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#4CC9F0" />
+          <stop offset="0.5" stopColor="#8B7CFF" />
+          <stop offset="1" stopColor="#E45CFF" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M12 2 C13 9.4 14.6 11 22 12 C14.6 13 13 14.6 12 22 C11 14.6 9.4 13 2 12 C9.4 11 11 9.4 12 2 Z"
+        fill="url(#guLogoGrad)"
+      />
+    </svg>
+  );
+}
 
 export default function Home() {
   // Navigation & UI State
@@ -16,10 +37,12 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   
   // Character & User Data state
-  const [characters, setCharacters] = useState([]);
+  // Seed from the merged static roster (hand-authored builds + full wiki-scraped
+  // Genshin roster) so the entire guide index is server-rendered for SEO with no
+  // runtime API dependency.
+  const [characters] = useState(fullRoster);
   const [favorites, setFavorites] = useState({}); // { charId: boolean }
   const [notes, setNotes] = useState({}); // { charId: string }
-  const [loadingGenshin, setLoadingGenshin] = useState(false);
   const [apiData, setApiData] = useState(null);
   const [loadingApi, setLoadingApi] = useState(false);
   
@@ -29,93 +52,22 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const menuRef = useRef(null);
-
-  // 1. Initialize character list (local static) and load extra Genshin characters from public API
-  useEffect(() => {
-    // Start with the high-quality pre-configured roster (10 Genshin, 23 WuWa)
-    setCharacters(characterDatabase);
-
-    async function fetchAllGenshinCharacters() {
-      setLoadingGenshin(true);
-      try {
-        const res = await fetch("https://genshin.jmp.blue/characters/all");
-        if (res.ok) {
-          const apiChars = await res.json();
-          
-          setCharacters((prev) => {
-            const nextList = [...prev];
-            const existingIds = new Set(nextList.map((c) => c.id));
-
-            for (const char of apiChars) {
-              let id = char.id || char.name.toLowerCase().replace(/\s+/g, "-");
-              
-              // Handle Traveler elements collision if id didn't carry it
-              if (id === "traveler") {
-                const element = (char.vision || "anemo").toLowerCase();
-                id = `traveler-${element}`;
-              }
-
-              // Skip if already in list (this preserves our custom pre-configured builds)
-              if (existingIds.has(id)) continue;
-
-              existingIds.add(id);
-
-              // Parse and format the new character
-              nextList.push({
-                id: id,
-                name: char.name,
-                game: "Genshin Impact",
-                rarity: char.rarity || 5,
-                element: char.vision || "Hydro",
-                weapon: char.weapon || "Sword",
-                role: char.role || "DPS / Support",
-                description: char.description || `${char.name} is a playable character in Genshin Impact from ${char.nation || 'Teyvat'}.`,
-                icon: `https://genshin.jmp.blue/characters/${id}/icon`,
-                splash: `https://genshin.jmp.blue/characters/${id}/gacha-splash`,
-                bestWeapon: {
-                  name: char.weapon === "Catalyst" ? "Lost Prayer to the Sacred Winds" : char.weapon === "Claymore" ? "Wolf's Gravestone" : char.weapon === "Bow" ? "Aqua Simulacra" : "Mistsplitter Reforged",
-                  rarity: 5,
-                  details: "Provides high statistics and matching multipliers for their archetype."
-                },
-                f2pWeapon: {
-                  name: char.weapon === "Catalyst" ? "Mappa Mare (F2P)" : char.weapon === "Claymore" ? "Prototype Archaic (F2P)" : char.weapon === "Bow" ? "Favonius Warbow (F2P)" : "Favonius Sword (F2P)",
-                  rarity: 4,
-                  details: "Fully craftable or standard gacha pull option that provides high utility."
-                },
-                bestArtifacts: {
-                  set: "Emblem of Severed Fate (4-Piece) / Gladiator's Finale",
-                  mainStats: "Sands: ER% or ATK% | Goblet: Elemental DMG% | Circlet: Crit Rate / Crit DMG",
-                  subStats: "Crit Rate > Crit DMG > Energy Recharge > ATK%"
-                },
-                bestEchoes: null,
-                teamComps: [
-                  { name: "General Synergy", members: [char.name, "Bennett", "Xingqiu", "Kazuha"] }
-                ],
-                pakistaniTips: `Standard F2P build guidelines. Set up on the Asia Server for optimized latency (90ms - 135ms on PTCL/StormFiber). Level up to at least level 80 and focus on leveling elemental skill talents.`
-              });
-            }
-
-            console.log("Mapped character IDs in state:", nextList.map(c => c.id));
-            return nextList;
-          });
-        }
-      } catch (err) {
-        console.warn("Client-side fetch to genshin.jmp.blue failed. Using static offline database roster.", err.message);
-      } finally {
-        setLoadingGenshin(false);
-      }
-    }
-
-    fetchAllGenshinCharacters();
-  }, []);
+  // Monotonic token so a slow character fetch can't overwrite a newer selection
+  const apiRequestRef = useRef(0);
 
   // 2. Read favorites & notes from localStorage (runs purely offline, client-side only)
   useEffect(() => {
-    const localFavs = localStorage.getItem("tr_favorites");
-    const localNotes = localStorage.getItem("tr_notes");
-    
-    if (localFavs) setFavorites(JSON.parse(localFavs));
-    if (localNotes) setNotes(JSON.parse(localNotes));
+    // Guard against corrupted/partial JSON so a bad value can't break the mount effect
+    const safeParse = (key, fallback) => {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    };
+    setFavorites(safeParse("tr_favorites", {}));
+    setNotes(safeParse("tr_notes", {}));
   }, []);
 
   // 2b. Close mobile menu on outside clicks
@@ -130,6 +82,11 @@ export default function Home() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // 2c. App-like behavior: reset scroll to the top when switching sections (tabs)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [activeSection]);
 
   // Handle favorite toggle
   const handleToggleFavorite = (id) => {
@@ -152,19 +109,26 @@ export default function Home() {
     setIsModalOpen(true);
     setApiData(null);
 
-    if (char.game === "Genshin Impact") {
-      setLoadingApi(true);
-      try {
-        const res = await fetch(`https://genshin.jmp.blue/characters/${char.id}`);
-        if (res.ok) {
-          const data = await res.json();
-          setApiData(data);
-        }
-      } catch (err) {
-        console.warn("Failed to fetch detailed character skills from api:", err.message);
-      } finally {
-        setLoadingApi(false);
+    // Tag this request; if the user switches characters before it resolves,
+    // a newer request bumps the token and this stale response is discarded.
+    const reqId = ++apiRequestRef.current;
+
+    if (char.game !== "Genshin Impact") {
+      setLoadingApi(false);
+      return;
+    }
+
+    setLoadingApi(true);
+    try {
+      const res = await fetch(`https://genshin.jmp.blue/characters/${char.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (apiRequestRef.current === reqId) setApiData(data);
       }
+    } catch (err) {
+      console.warn("Failed to fetch detailed character skills from api:", err.message);
+    } finally {
+      if (apiRequestRef.current === reqId) setLoadingApi(false);
     }
   };
 
@@ -211,9 +175,9 @@ export default function Home() {
       {/* 2. Primary Navigation */}
       <nav className="primary-nav">
         <div className="container">
-          <a href="#" className="logo" onClick={() => { setActiveSection("guides"); setMobileMenuOpen(false); }}>
-            <div className="logo-block" />
-            TEYVATRESONANCE<span>PK</span>
+          <a href="#" className="logo" onClick={(e) => { e.preventDefault(); setActiveSection("guides"); setMobileMenuOpen(false); }}>
+            <LogoMark />
+            GACHA <span>USTAAD</span>
           </a>
           
           <ul className="nav-links">
@@ -254,8 +218,8 @@ export default function Home() {
               </a>
             </li>
             <li>
-              <a 
-                href="#chat" 
+              <a
+                href="#chat"
                 className={activeSection === "chat" ? "active" : ""}
                 onClick={(e) => {
                   e.preventDefault();
@@ -263,6 +227,18 @@ export default function Home() {
                 }}
               >
                 LIVE CHAT
+              </a>
+            </li>
+            <li>
+              <a
+                href="#aichat"
+                className={activeSection === "aichat" ? "active" : ""}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveSection("aichat");
+                }}
+              >
+                CHARACTER AI
               </a>
             </li>
           </ul>
@@ -325,8 +301,8 @@ export default function Home() {
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="#chat" 
+                  <a
+                    href="#chat"
                     className={activeSection === "chat" ? "active" : ""}
                     onClick={(e) => {
                       e.preventDefault();
@@ -335,6 +311,19 @@ export default function Home() {
                     }}
                   >
                     LIVE CHAT
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#aichat"
+                    className={activeSection === "aichat" ? "active" : ""}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("aichat");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    CHARACTER AI
                   </a>
                 </li>
               </ul>
@@ -349,8 +338,8 @@ export default function Home() {
         <div className="container">
           <div className="hero-content">
             <div className="hero-text">
-              <span className="hero-badge">PAKISTANI GACHA PORTAL</span>
-              <h1 className="display-xl hero-title">Genshin & WuWa Complete Guides</h1>
+              <span className="hero-badge">GACHA USTAAD · PAKISTAN</span>
+              <h1 className="display-xl hero-title">Complete <span className="accent-cyan">Genshin</span> &amp; <span className="accent-magenta">WuWa</span> Guides</h1>
               <p className="heading-lg hero-subhead">
                 Premium F2P builds, local server ping guidelines, and custom user note systems. Optimized for mobile and low-spec gaming in Pakistan.
               </p>
@@ -365,302 +354,231 @@ export default function Home() {
             </div>
             
             <div className="hero-visual">
-              <div className="cinematic-showcase">
-
-                {/* ── Ambient background glow layers ── */}
-                <div className="cin-bg-glow cin-glow-left" />
-                <div className="cin-bg-glow cin-glow-right" />
-                <div className="cin-center-beam" />
-
-                {/* ── Traveler Card ── */}
-                <div className="cin-card cin-card-traveler">
-                  {/* Top game badge */}
-                  <div className="cin-game-tag cin-tag-gi">
-                    <span className="cin-tag-dot" style={{background:"#4fc3f7"}} />
-                    GENSHIN IMPACT
-                  </div>
-                  {/* Full-body splash art */}
-                  <div className="cin-img-frame">
-                    <div className="cin-img-shimmer" />
-                    <img
-                      src="https://gi.yatta.moe/assets/UI/UI_Gacha_AvatarImg_PlayerGirl.png"
-                      alt="Traveler (Lumine)"
-                      className="cin-char-img"
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        e.target.src = "https://enka.network/ui/UI_Gacha_AvatarImg_PlayerGirl.png";
-                      }}
-                    />
-                    {/* Elemental energy at base */}
-                    <div className="cin-base-energy cin-energy-anemo" />
-                  </div>
-                  {/* Name plate */}
-                  <div className="cin-nameplate">
-                    <span className="cin-char-title">Traveler</span>
-                    <span className="cin-char-subtitle">Lumine · The Outlander</span>
-                    <div className="cin-element-badge cin-el-anemo">⊕ Anemo</div>
-                  </div>
-                </div>
-
-                {/* ── Center VS Divider ── */}
-                <div className="cin-vs-column">
-                  <div className="cin-vs-line top" />
-                  <div className="cin-vs-orb">
-                    <div className="cin-vs-inner">VS</div>
-                    <div className="cin-vs-ring r1" />
-                    <div className="cin-vs-ring r2" />
-                  </div>
-                  <div className="cin-vs-line bottom" />
-                </div>
-
-                {/* ── Rover Card ── */}
-                <div className="cin-card cin-card-rover">
-                  {/* Top game badge */}
-                  <div className="cin-game-tag cin-tag-ww">
-                    <span className="cin-tag-dot" style={{background:"#ce93d8"}} />
-                    WUTHERING WAVES
-                  </div>
-                  {/* Full-body splash art */}
-                  <div className="cin-img-frame">
-                    <div className="cin-img-shimmer" style={{animationDelay:"-1.2s"}} />
-                    <img
-                      src="https://wutheringwaves.fandom.com/wiki/Special:FilePath/Resonator_Rover_(Havoc).png"
-                      alt="Rover (Havoc)"
-                      className="cin-char-img"
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        // fallback to standard rover
-                        if (!e.target.dataset.fb) {
-                          e.target.dataset.fb = "1";
-                          e.target.src = "https://wutheringwaves.fandom.com/wiki/Special:FilePath/Resonator_Rover.png";
-                        }
-                      }}
-                    />
-                    {/* Elemental energy at base */}
-                    <div className="cin-base-energy cin-energy-havoc" />
-                  </div>
-                  {/* Name plate */}
-                  <div className="cin-nameplate">
-                    <span className="cin-char-title">Rover</span>
-                    <span className="cin-char-subtitle">Rover · The Drifter</span>
-                    <div className="cin-element-badge cin-el-havoc">◈ Havoc</div>
-                  </div>
-                </div>
-
-                {/* ── Floating rune particles ── */}
-                {[1,2,3,4,5,6].map(i => (
-                  <div key={i} className={`cin-rune cin-rune-${i}`} />
-                ))}
-
-              </div>
+              <HeroSpotlight />
             </div>
           </div>
         </div>
       </header>
 
       {/* 4. MAIN BODY DOCK (Switches sections based on Active Nav link) */}
-      {activeSection === "guides" ? (
-        <>
-          {/* Filter strip */}
-          <section className="filter-section" id="guides-section">
-            <div className="container">
-              <div className="filter-container">
-                <div className="filter-group">
-                  <span className="filter-label">Filter Game:</span>
-                  <button 
-                    className={`pill-tab ${activeCategory === "all" ? "active" : ""}`}
-                    onClick={() => setActiveCategory("all")}
-                  >
-                    ALL BUILD GUIDES
-                  </button>
-                  <button 
-                    className={`pill-tab ${activeCategory === "genshin" ? "active" : ""}`}
-                    onClick={() => setActiveCategory("genshin")}
-                  >
-                    GENSHIN IMPACT
-                  </button>
-                  <button 
-                    className={`pill-tab ${activeCategory === "wuwa" ? "active" : ""}`}
-                    onClick={() => setActiveCategory("wuwa")}
-                  >
-                    WUTHERING WAVES
-                  </button>
-                  <button 
-                    className={`pill-tab ${activeCategory === "saved" ? "active" : ""}`}
-                    style={{ borderColor: "var(--primary)" }}
-                    onClick={() => setActiveCategory("saved")}
-                  >
-                    ❤️ MY SAVED BUILDS ({Object.values(favorites).filter(Boolean).length})
-                  </button>
-                </div>
-
-                {/* Search */}
-                <div className="search-wrapper">
-                  <span className="search-icon">🔍</span>
-                  <input
-                    type="text"
-                    className="search-input"
-                    placeholder="Search character, element, role..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
+      <div key={activeSection} className="animate-fade-in">
+        {activeSection === "guides" ? (
+          <>
+            {/* Filter strip */}
+            <section className="filter-section" id="guides-section">
+              <div className="container">
+                <div className="filter-container">
+                  <div className="filter-group">
+                    <span className="filter-label">Filter Game:</span>
+                    <button 
+                      className={`pill-tab ${activeCategory === "all" ? "active" : ""}`}
+                      onClick={() => setActiveCategory("all")}
+                    >
+                      ALL BUILD GUIDES
+                    </button>
+                    <button 
+                      className={`pill-tab ${activeCategory === "genshin" ? "active" : ""}`}
+                      onClick={() => setActiveCategory("genshin")}
+                    >
+                      GENSHIN IMPACT
+                    </button>
+                    <button 
+                      className={`pill-tab ${activeCategory === "wuwa" ? "active" : ""}`}
+                      onClick={() => setActiveCategory("wuwa")}
+                    >
+                      WUTHERING WAVES
+                    </button>
+                    <button 
+                      className={`pill-tab ${activeCategory === "saved" ? "active" : ""}`}
+                      style={{ borderColor: "var(--primary)" }}
+                      onClick={() => setActiveCategory("saved")}
+                    >
+                      ❤️ MY SAVED BUILDS ({Object.values(favorites).filter(Boolean).length})
+                    </button>
+                  </div>
+  
+                  {/* Search */}
+                  <div className="search-wrapper">
+                    <span className="search-icon">🔍</span>
+                    <input
+                      type="text"
+                      className="search-input"
+                      placeholder="Search character, element, role..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-
-          {/* Guides Character Grid left / Ping Simulator right */}
-          <section className="grid-section">
-            <div className="container">
-              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "32px", alignItems: "start" }} className="guides-grid-layout">
-                {/* Character Cards list */}
-                <div style={{ gridColumn: "span 1" }}>
-                  <div className="section-header">
-                    <div className="section-info">
-                      <h2 className="heading-md">CHARACTER GUIDE INDEX</h2>
-                      <span className="result-count">
-                        {filteredCharacters.length} results
-                        {loadingGenshin && (
-                          <span style={{ marginLeft: "12px", color: "var(--primary-dark)", fontSize: "13px" }} className="loading-dots">
-                            Loading all Genshin characters
+            </section>
+  
+            {/* Guides Character Grid left / Ping Simulator right */}
+            <section className="grid-section">
+              <div className="container">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "32px", alignItems: "start" }} className="guides-grid-layout">
+                  {/* Character Cards list */}
+                  <div style={{ gridColumn: "span 1" }}>
+                    <div className="section-header">
+                      <div className="section-info">
+                        <h2 className="heading-md">CHARACTER GUIDE INDEX</h2>
+                        <span className="result-count">
+                          {filteredCharacters.length} results
+                          <span style={{ marginLeft: "12px", color: "var(--mute)", fontSize: "13px" }}>
+                            · {characters.length} characters in the database
                           </span>
+                        </span>
+                      </div>
+                    </div>
+  
+                    {filteredCharacters.length > 0 ? (
+                      <div className="card-grid">
+                        {filteredCharacters.map((char, idx) => (
+                          <CharacterCard
+                            key={char.id}
+                            character={char}
+                            onSelect={handleSelectCharacter}
+                            isFavorite={!!favorites[char.id]}
+                            onToggleFavorite={handleToggleFavorite}
+                            index={idx}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ padding: "40px", border: "1px dashed var(--hairline)", textAlign: "center", borderRadius: "2px" }}>
+                        <p className="body-md" style={{ color: "var(--mute)" }}>
+                          No character guides found matching your filters.
+                        </p>
+                        {activeCategory === "saved" && (
+                          <p className="body-sm" style={{ color: "var(--mute)", marginTop: "8px" }}>
+                            Click the heart ❤️ icon on any character to save it to your roster.
+                          </p>
                         )}
-                      </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+  
+            {/* Technical and ISP Guidelines Section */}
+            <section className="tech-info-section" id="optimization-section">
+              <div className="container">
+                <div className="tech-layout">
+                  <div className="tech-guide-article">
+                    <span className="hero-badge" style={{ alignSelf: "flex-start" }}>NETWORK OPTIMIZATION</span>
+                    <h2 className="display-lg tech-guide-title">ISP & Hardware Calibration</h2>
+                    <p className="body-md" style={{ color: "var(--mute)" }}>
+                      Gacha combat requires stable network connection thresholds. To avoid timing losses (e.g. failing dodge frames in WuWa or swapping skills in Genshin), follow this optimization chart for Pakistani ISP gateways:
+                    </p>
+                    
+                    <div className="table-wrapper">
+                      <table className="tech-table">
+                        <thead>
+                          <tr>
+                            <th>ISP Provider</th>
+                            <th>Recommended Server</th>
+                            <th>Expected Latency</th>
+                            <th>Jitter Class</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>StormFiber GPON</td>
+                            <td>Asia (Singapore)</td>
+                            <td>90ms - 98ms</td>
+                            <td>Very Low</td>
+                          </tr>
+                          <tr>
+                            <td>PTCL Flash Fiber</td>
+                            <td>Europe (Frankfurt)</td>
+                            <td>130ms - 138ms</td>
+                            <td>Low</td>
+                          </tr>
+                          <tr>
+                            <td>Transworld Home</td>
+                            <td>Asia (Singapore)</td>
+                            <td>88ms - 92ms</td>
+                            <td>Extremely Low</td>
+                          </tr>
+                          <tr>
+                            <td>Nayatel Fiber</td>
+                            <td>Asia (Singapore)</td>
+                            <td>105ms - 112ms</td>
+                            <td>Low</td>
+                          </tr>
+                          <tr>
+                            <td>PTCL Broadband (DSL)</td>
+                            <td>Europe (Frankfurt)</td>
+                            <td>140ms - 195ms</td>
+                            <td>High (Peak Hours)</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-
-                  {filteredCharacters.length > 0 ? (
-                    <div className="card-grid">
-                      {filteredCharacters.map((char) => (
-                        <CharacterCard
-                          key={char.id}
-                          character={char}
-                          onSelect={handleSelectCharacter}
-                          isFavorite={!!favorites[char.id]}
-                          onToggleFavorite={handleToggleFavorite}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <div style={{ padding: "40px", border: "1px dashed var(--hairline)", textAlign: "center", borderRadius: "2px" }}>
-                      <p className="body-md" style={{ color: "var(--mute)" }}>
-                        No character guides found matching your filters.
-                      </p>
-                      {activeCategory === "saved" && (
-                        <p className="body-sm" style={{ color: "var(--mute)", marginTop: "8px" }}>
-                          Click the heart ❤️ icon on any character to save it to your roster.
-                        </p>
-                      )}
-                    </div>
-                  )}
+  
+                  {/* Ping simulator tool */}
+                  <div>
+                    <PingSimulator />
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-
-          {/* Technical and ISP Guidelines Section */}
-          <section className="tech-info-section" id="optimization-section">
+            </section>
+          </>
+        ) : activeSection === "optimizer" ? (
+          /* Optimizer Section view */
+          <section className="grid-section" id="optimizer-section">
             <div className="container">
-              <div className="tech-layout">
-                <div className="tech-guide-article">
-                  <span className="hero-badge" style={{ alignSelf: "flex-start" }}>NETWORK OPTIMIZATION</span>
-                  <h2 className="display-lg tech-guide-title">ISP & Hardware Calibration</h2>
-                  <p className="body-md" style={{ color: "var(--mute)" }}>
-                    Gacha combat requires stable network connection thresholds. To avoid timing losses (e.g. failing dodge frames in WuWa or swapping skills in Genshin), follow this optimization chart for Pakistani ISP gateways:
-                  </p>
-                  
-                  <table className="tech-table">
-                    <thead>
-                      <tr>
-                        <th>ISP Provider</th>
-                        <th>Recommended Server</th>
-                        <th>Expected Latency</th>
-                        <th>Jitter Class</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>StormFiber GPON</td>
-                        <td>Asia (Singapore)</td>
-                        <td>90ms - 98ms</td>
-                        <td>Very Low</td>
-                      </tr>
-                      <tr>
-                        <td>PTCL Flash Fiber</td>
-                        <td>Europe (Frankfurt)</td>
-                        <td>130ms - 138ms</td>
-                        <td>Low</td>
-                      </tr>
-                      <tr>
-                        <td>Transworld Home</td>
-                        <td>Asia (Singapore)</td>
-                        <td>88ms - 92ms</td>
-                        <td>Extremely Low</td>
-                      </tr>
-                      <tr>
-                        <td>Nayatel Fiber</td>
-                        <td>Asia (Singapore)</td>
-                        <td>105ms - 112ms</td>
-                        <td>Low</td>
-                      </tr>
-                      <tr>
-                        <td>PTCL Broadband (DSL)</td>
-                        <td>Europe (Frankfurt)</td>
-                        <td>140ms - 195ms</td>
-                        <td>High (Peak Hours)</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Ping simulator tool */}
-                <div>
-                  <PingSimulator />
+              <div className="section-header">
+                <div className="section-info">
+                  <h2 className="heading-md">LOW-SPEC DEVICE OPTIMIZER</h2>
+                  <span className="result-count">3 Platform Categories Loaded</span>
                 </div>
               </div>
+              <DeviceOptimizer />
             </div>
           </section>
-        </>
-      ) : activeSection === "optimizer" ? (
-        /* Optimizer Section view */
-        <section className="grid-section" id="optimizer-section">
-          <div className="container">
-            <div className="section-header">
-              <div className="section-info">
-                <h2 className="heading-md">LOW-SPEC DEVICE OPTIMIZER</h2>
-                <span className="result-count">3 Platform Categories Loaded</span>
+        ) : activeSection === "maps" ? (
+          /* Maps Section view */
+          <section className="grid-section" id="maps-section">
+            <div className="container">
+              <div className="section-header">
+                <div className="section-info">
+                  <h2 className="heading-md">INTERACTIVE WORLD MAPS</h2>
+                  <span className="result-count">2 Maps Loaded</span>
+                </div>
               </div>
+              <InteractiveMaps />
             </div>
-            <DeviceOptimizer />
-          </div>
-        </section>
-      ) : activeSection === "maps" ? (
-        /* Maps Section view */
-        <section className="grid-section" id="maps-section">
-          <div className="container">
-            <div className="section-header">
-              <div className="section-info">
-                <h2 className="heading-md">INTERACTIVE WORLD MAPS</h2>
-                <span className="result-count">2 Maps Loaded</span>
+          </section>
+        ) : activeSection === "chat" ? (
+          /* Live Chat Section view */
+          <section className="grid-section" id="chat-section">
+            <div className="container">
+              <div className="section-header">
+                <div className="section-info">
+                  <h2 className="heading-md">LIVE RESONANCE CHAT</h2>
+                  <span className="result-count">Real-time Sync Active</span>
+                </div>
               </div>
+              <LiveChat />
             </div>
-            <InteractiveMaps />
-          </div>
-        </section>
-      ) : (
-        /* Live Chat Section view */
-        <section className="grid-section" id="chat-section">
-          <div className="container">
-            <div className="section-header">
-              <div className="section-info">
-                <h2 className="heading-md">LIVE RESONANCE CHAT</h2>
-                <span className="result-count">Real-time Sync Active</span>
+          </section>
+        ) : (
+          /* Character AI Chatbot Section view */
+          <section className="grid-section" id="aichat-section">
+            <div className="container">
+              <div className="section-header">
+                <div className="section-info">
+                  <h2 className="heading-md">TALK TO A CHARACTER (AI)</h2>
+                  <span className="result-count">Genshin &amp; WuWa · Powered by Cerebras</span>
+                </div>
               </div>
+              <CharacterChat />
             </div>
-            <LiveChat />
-          </div>
-        </section>
-      )}
+          </section>
+        )}
+      </div>
 
       {/* 5. Footer */}
       <footer className="footer-section">
@@ -668,11 +586,11 @@ export default function Home() {
           <div className="footer-grid">
             <div className="footer-column" style={{ gridColumn: "span 2" }}>
               <div className="logo" style={{ color: "white" }}>
-                <div className="logo-block" />
-                TEYVATRESONANCE<span>PK</span>
+                <LogoMark />
+                GACHA <span>USTAAD</span>
               </div>
               <p className="body-sm" style={{ color: "var(--on-dark-mute)", marginTop: "8px" }}>
-                The premier resource for Genshin Impact and Wuthering Waves build guides in Pakistan. Engineered for optimal responsive performance.
+                Gacha Ustaad (گچا اُستاد) is Pakistan&apos;s home for Genshin Impact and Wuthering Waves build guides — F2P builds, best weapons &amp; artifacts, team comps, and local ISP ping optimization.
               </p>
             </div>
             
@@ -683,6 +601,7 @@ export default function Home() {
                 <li><a href="#optimizer" onClick={(e) => { e.preventDefault(); setActiveSection("optimizer"); }}>Device Optimizer</a></li>
                 <li><a href="#maps" onClick={(e) => { e.preventDefault(); setActiveSection("maps"); }}>Interactive Maps</a></li>
                 <li><a href="#chat" onClick={(e) => { e.preventDefault(); setActiveSection("chat"); }}>Live Chat</a></li>
+                <li><a href="#aichat" onClick={(e) => { e.preventDefault(); setActiveSection("aichat"); }}>Character AI</a></li>
                 <li><a href="#optimization-section" onClick={(e) => { e.preventDefault(); setActiveSection("guides"); }}>Ping Checker</a></li>
               </ul>
             </div>
@@ -705,16 +624,98 @@ export default function Home() {
 
           <div className="footer-bottom">
             <div className="legal-bar">
-              © {new Date().getFullYear()} TEYVATRESONANCE PK. THIS PORTAL IS AN INDEPENDENT FAN SITE. ALL ASSETS COPIED ARE COPYRIGHT OF COGNOSPHERE (HOYOVERSE) & KURO GAMES.
+              © {new Date().getFullYear()} GACHA USTAAD (گچا اُستاد). THIS PORTAL IS AN INDEPENDENT FAN SITE. ALL ASSETS ARE COPYRIGHT OF COGNOSPHERE (HOYOVERSE) & KURO GAMES. Genshin Impact character data &amp; icons sourced from the{" "}
+              <a href="https://genshin-impact.fandom.com/wiki/Character/List" target="_blank" rel="noopener noreferrer" style={{ color: "var(--on-dark-mute)", textDecoration: "underline" }}>Genshin Impact Wiki</a>, available under CC BY-SA 3.0.
             </div>
             <ul className="social-links">
-              <li><a href="#">DISCORD</a></li>
-              <li><a href="#">TWITTER</a></li>
-              <li><a href="#">YOUTUBE</a></li>
+              <li><a href="#" onClick={(e) => e.preventDefault()} aria-label="Discord (coming soon)">DISCORD</a></li>
+              <li><a href="#" onClick={(e) => e.preventDefault()} aria-label="Twitter (coming soon)">TWITTER</a></li>
+              <li><a href="#" onClick={(e) => e.preventDefault()} aria-label="YouTube (coming soon)">YOUTUBE</a></li>
             </ul>
           </div>
         </div>
       </footer>
+
+      {/* Mobile App Bottom Tab Bar (phones only, via CSS) */}
+      <nav className="app-tabbar" aria-label="Primary navigation">
+        {[
+          {
+            key: "guides",
+            label: "Guides",
+            icon: (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+              </svg>
+            ),
+          },
+          {
+            key: "optimizer",
+            label: "Optimizer",
+            icon: (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="4" y1="21" x2="4" y2="14" />
+                <line x1="4" y1="10" x2="4" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12" y2="3" />
+                <line x1="20" y1="21" x2="20" y2="16" />
+                <line x1="20" y1="12" x2="20" y2="3" />
+                <line x1="1" y1="14" x2="7" y2="14" />
+                <line x1="9" y1="8" x2="15" y2="8" />
+                <line x1="17" y1="16" x2="23" y2="16" />
+              </svg>
+            ),
+          },
+          {
+            key: "maps",
+            label: "Maps",
+            icon: (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            ),
+          },
+          {
+            key: "chat",
+            label: "Chat",
+            icon: (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+              </svg>
+            ),
+          },
+          {
+            key: "aichat",
+            label: "AI",
+            icon: (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="4" y="8" width="16" height="12" rx="2" />
+                <path d="M12 4v4" />
+                <circle cx="12" cy="3" r="1" />
+                <circle cx="9" cy="13.5" r="1.1" />
+                <circle cx="15" cy="13.5" r="1.1" />
+                <path d="M9.5 17h5" />
+                <path d="M2 12v4M22 12v4" />
+              </svg>
+            ),
+          },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            className={`app-tab ${activeSection === tab.key ? "active" : ""}`}
+            onClick={() => setActiveSection(tab.key)}
+            aria-current={activeSection === tab.key ? "page" : undefined}
+            aria-label={tab.label}
+          >
+            {tab.icon}
+            <span className="app-tab-label">{tab.label}</span>
+          </button>
+        ))}
+      </nav>
 
       {/* 6. Slider Modal Drawer */}
       <ModalDrawer

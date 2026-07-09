@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { toWebP } from "../utils/image";
 
 export default function ModalDrawer({ 
   character, 
@@ -17,14 +18,32 @@ export default function ModalDrawer({
   const [saveStatus, setSaveStatus] = useState("");
   const [activeTab, setActiveTab] = useState("build"); // "build" or "skills"
 
-  // Sync state notesText with prop personalNotes when character changes
+  // Sync notesText with the incoming notes only when the CHARACTER changes.
+  // (Deliberately excluding personalNotes: otherwise saving notes updates the
+  // prop and instantly wipes the "Notes saved!" toast on the same render.)
   useEffect(() => {
     if (character) {
       setNotesText(personalNotes || "");
       setSaveStatus("");
       setActiveTab("build"); // reset to build tab on character switch
     }
-  }, [character, personalNotes]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [character]);
+
+  // Lock background scroll and allow Escape-to-close while the drawer is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKey = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [isOpen, onClose]);
 
   if (!character) return null;
 
@@ -64,23 +83,25 @@ export default function ModalDrawer({
           {/* Headline & Avatar Summary */}
           <div className="detail-intro-section">
             <div className="detail-img-box">
-              <img 
-                src={splash || icon || "https://placehold.co/200x200/1a1a1a/76b900?text=Avatar"} 
-                alt={name} 
+              <img
+                src={toWebP(splash || icon || "https://placehold.co/400x400/12161f/4CC9F0?text=Avatar")}
+                alt={name}
                 className="detail-img"
                 referrerPolicy="no-referrer"
                 onError={(e) => {
-                  if (splash && icon && splash !== icon && !e.target.src.endsWith(icon)) {
-                    e.target.src = icon;
-                  } else {
-                    e.target.src = "https://placehold.co/200x200/1a1a1a/76b900?text=" + encodeURIComponent(name);
+                  const img = e.target;
+                  if (splash && icon && splash !== icon && !img.src.endsWith(icon) && !img.dataset.ph) {
+                    img.src = toWebP(icon);
+                  } else if (!img.dataset.ph) {
+                    img.dataset.ph = "1";
+                    img.src = "https://placehold.co/400x400/12161f/4CC9F0?text=" + encodeURIComponent(name);
                   }
                 }}
               />
             </div>
             <div className="detail-headline">
               <div className="detail-title-row">
-                <h1 className="heading-xl" style={{ margin: 0 }}>{name}</h1>
+                <h2 className="heading-xl" style={{ margin: 0 }}>{name}</h2>
                 <span className={`badge-tag rarity-${rarity}`}>
                   {rarity}-STAR
                 </span>
@@ -244,8 +265,8 @@ export default function ModalDrawer({
                   />
                   <div className="notes-actions">
                     {saveStatus && (
-                      <span className="body-sm" style={{ color: "green", alignSelf: "center", marginRight: "8px", fontWeight: "bold" }}>
-                        {saveStatus}
+                      <span className="body-sm" style={{ color: "#4ADE80", alignSelf: "center", marginRight: "8px", fontWeight: "bold" }}>
+                        ✓ {saveStatus}
                       </span>
                     )}
                     <button className="btn btn-primary" onClick={handleSaveNotesClick} style={{ height: "36px", padding: "0 16px", fontSize: "14px" }}>
@@ -274,32 +295,32 @@ export default function ModalDrawer({
               <div className="guide-panel">
                 <h3 className="panel-title heading-sm">RESONATOR BIOGRAPHY</h3>
                 <div className="profile-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px", marginTop: "12px" }}>
-                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--surface-soft)", paddingBottom: "8px" }}>
+                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
                     <div className="caption-xs" style={{ color: "var(--mute)" }}>Appellation / Title</div>
                     <div className="body-sm" style={{ fontWeight: "bold", color: "var(--ink)" }}>{character.title || apiData?.title || "Unknown"}</div>
                   </div>
-                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--surface-soft)", paddingBottom: "8px" }}>
+                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
                     <div className="caption-xs" style={{ color: "var(--mute)" }}>Gender</div>
                     <div className="body-sm" style={{ fontWeight: "bold", color: "var(--ink)" }}>{character.gender || apiData?.gender || "Unknown"}</div>
                   </div>
-                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--surface-soft)", paddingBottom: "8px" }}>
+                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
                     <div className="caption-xs" style={{ color: "var(--mute)" }}>Nation / Region</div>
                     <div className="body-sm" style={{ fontWeight: "bold", color: "var(--ink)" }}>{character.nation || apiData?.nation || "Unknown"}</div>
                   </div>
-                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--surface-soft)", paddingBottom: "8px" }}>
+                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
                     <div className="caption-xs" style={{ color: "var(--mute)" }}>Affiliation</div>
                     <div className="body-sm" style={{ fontWeight: "bold", color: "var(--ink)" }}>{character.affiliation || apiData?.affiliation || "Unknown"}</div>
                   </div>
-                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--surface-soft)", paddingBottom: "8px" }}>
+                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
                     <div className="caption-xs" style={{ color: "var(--mute)" }}>Birthday</div>
                     <div className="body-sm" style={{ fontWeight: "bold", color: "var(--ink)" }}>{character.birthday || apiData?.birthday || "Unknown"}</div>
                   </div>
-                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--surface-soft)", paddingBottom: "8px" }}>
+                  <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
                     <div className="caption-xs" style={{ color: "var(--mute)" }}>{game === "Genshin Impact" ? "Constellation" : "Forte Aspect"}</div>
                     <div className="body-sm" style={{ fontWeight: "bold", color: "var(--ink)" }}>{character.constellation || apiData?.constellation || "Unknown"}</div>
                   </div>
                   {apiData?.release && (
-                    <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--surface-soft)", paddingBottom: "8px" }}>
+                    <div className="profile-meta-item" style={{ borderBottom: "1px solid var(--glass-border)", paddingBottom: "8px" }}>
                       <div className="caption-xs" style={{ color: "var(--mute)" }}>Release Date</div>
                       <div className="body-sm" style={{ fontWeight: "bold", color: "var(--ink)" }}>{apiData.release}</div>
                     </div>
@@ -334,7 +355,7 @@ export default function ModalDrawer({
                       <h3 className="panel-title heading-sm">ACTIVE TALENTS</h3>
                       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                         {apiData.skillTalents.map((talent, idx) => (
-                          <div key={idx} style={{ borderBottom: idx !== apiData.skillTalents.length - 1 ? "1px solid var(--surface-soft)" : "none", paddingBottom: "12px" }}>
+                          <div key={idx} style={{ borderBottom: idx !== apiData.skillTalents.length - 1 ? "1px solid var(--glass-border)" : "none", paddingBottom: "12px" }}>
                             <div className="body-strong" style={{ color: "var(--ink)", display: "flex", justifyContent: "space-between" }}>
                               <span>{talent.name}</span>
                               <span className="caption-xs" style={{ color: "var(--mute)", border: "1px solid var(--hairline)", padding: "1px 6px" }}>
@@ -356,7 +377,7 @@ export default function ModalDrawer({
                       <h3 className="panel-title heading-sm">PASSIVE TALENTS</h3>
                       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                         {apiData.passiveTalents.map((passive, idx) => (
-                          <div key={idx} style={{ borderBottom: idx !== apiData.passiveTalents.length - 1 ? "1px solid var(--surface-soft)" : "none", paddingBottom: "12px" }}>
+                          <div key={idx} style={{ borderBottom: idx !== apiData.passiveTalents.length - 1 ? "1px solid var(--glass-border)" : "none", paddingBottom: "12px" }}>
                             <div className="body-strong" style={{ color: "var(--ink)", display: "flex", justifyContent: "space-between" }}>
                               <span>{passive.name}</span>
                               <span className="caption-xs" style={{ color: "var(--mute)", border: "1px solid var(--hairline)", padding: "1px 6px" }}>
@@ -378,7 +399,7 @@ export default function ModalDrawer({
                       <h3 className="panel-title heading-sm">CONSTELLATIONS</h3>
                       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                         {apiData.constellations.map((constellation, idx) => (
-                          <div key={idx} style={{ borderBottom: idx !== apiData.constellations.length - 1 ? "1px solid var(--surface-soft)" : "none", paddingBottom: "12px" }}>
+                          <div key={idx} style={{ borderBottom: idx !== apiData.constellations.length - 1 ? "1px solid var(--glass-border)" : "none", paddingBottom: "12px" }}>
                             <div className="body-strong" style={{ color: "var(--ink)", display: "flex", gap: "8px" }}>
                               <span style={{ color: "var(--primary-dark)" }}>C{idx + 1}</span>
                               <span>{constellation.name}</span>

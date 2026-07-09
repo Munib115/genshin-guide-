@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { toWebP } from "../utils/image";
 import { characterDatabase } from "../data/characters";
 
 export default function LiveChat() {
@@ -18,7 +19,7 @@ export default function LiveChat() {
 
   // 2. User & Chat States
   const [username, setUsername] = useState("");
-  const [selectedAvatar, setSelectedAvatar] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState(characterDatabase[0]?.icon || "");
   const [gameTag, setGameTag] = useState("Genshin"); // Genshin or WuWa
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState([]);
@@ -289,7 +290,7 @@ export default function LiveChat() {
         <div className="card-dark" style={{ border: "1px solid var(--primary)", background: "rgba(0,0,0,0.85)" }}>
           <h3 className="heading-sm" style={{ color: "var(--primary)", marginBottom: "var(--spacing-sm)" }}>SUPABASE CONNECTION CONFIGURATION</h3>
           <p className="body-sm" style={{ color: "var(--on-dark-mute)", marginBottom: "var(--spacing-md)" }}>
-            Provide your project's URL and Anon Key to enable real-time messaging. This config is stored securely in your local browser storage.
+            Provide your project&apos;s URL and Anon Key to enable real-time messaging. This config is stored securely in your local browser storage.
           </p>
           <form onSubmit={handleSaveConfig} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <div>
@@ -325,7 +326,7 @@ export default function LiveChat() {
       )}
 
       {/* Main Grid: User Profile Left, Message Box Right */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-lg)" }}>
+      <div className="chat-grid-container">
         
         {/* User Configuration Panel */}
         <div className="card-dark" style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-md)" }}>
@@ -358,7 +359,7 @@ export default function LiveChat() {
                   style={{
                     flex: 1,
                     padding: "8px",
-                    background: gameTag === "Genshin" ? "#0288d1" : "#222",
+                    background: gameTag === "Genshin" ? "#2AA6D6" : "rgba(255,255,255,0.05)",
                     color: "white",
                     border: "1px solid var(--hairline-strong)",
                     cursor: "pointer",
@@ -374,7 +375,7 @@ export default function LiveChat() {
                   style={{
                     flex: 1,
                     padding: "8px",
-                    background: gameTag === "WuWa" ? "#f57c00" : "#222",
+                    background: gameTag === "WuWa" ? "#B23BE0" : "rgba(255,255,255,0.05)",
                     color: "white",
                     border: "1px solid var(--hairline-strong)",
                     cursor: "pointer",
@@ -409,7 +410,7 @@ export default function LiveChat() {
           <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "rgba(255,255,255,0.05)", padding: "8px", border: "1px dashed var(--hairline-strong)" }}>
             {selectedAvatar && (
               <img 
-                src={selectedAvatar} 
+                src={toWebP(selectedAvatar)} 
                 alt="Selected Avatar" 
                 style={{ width: "40px", height: "40px", borderRadius: "50%", background: "#333", objectFit: "contain" }}
                 onError={(e) => { e.target.src = "https://genshin.jmp.blue/characters/traveler-anemo/icon"; }}
@@ -418,7 +419,7 @@ export default function LiveChat() {
             <div>
               <div className="body-strong" style={{ color: "var(--primary)" }}>{username || "Anonymous"}</div>
               <div className="caption-xs" style={{ color: "var(--on-dark-mute)" }}>
-                Tag: <span style={{ color: gameTag === "Genshin" ? "#81d4fa" : "#ffcc80" }}>{gameTag.toUpperCase()}</span>
+                Tag: <span style={{ color: gameTag === "Genshin" ? "#7CE0FF" : "#F58BFF" }}>{gameTag.toUpperCase()}</span>
               </div>
             </div>
           </div>
@@ -490,23 +491,23 @@ export default function LiveChat() {
                 <p className="body-sm">No messages yet. Be the first to start the resonance!</p>
               </div>
             ) : (
-              messages.map((msg) => {
+              messages.map((msg, idx) => {
                 const isSelf = msg.username === username;
                 return (
-                  <div 
-                    key={msg.id || Math.random()} 
-                    style={{ 
-                      display: "flex", 
-                      alignItems: "flex-start", 
+                  <div
+                    key={msg.id ?? msg.created_at ?? idx}
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
                       gap: "10px",
                       padding: "8px 12px",
-                      background: isSelf ? "rgba(118, 185, 0, 0.05)" : "transparent",
+                      background: isSelf ? "rgba(76, 201, 240, 0.08)" : "transparent",
                       borderLeft: isSelf ? "3px solid var(--primary)" : "none"
                     }}
                   >
                     {msg.avatar ? (
                       <img 
-                        src={msg.avatar} 
+                        src={toWebP(msg.avatar)} 
                         alt="Avatar" 
                         style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#222", objectFit: "contain", border: "1px solid var(--hairline-strong)" }}
                         onError={(e) => { e.target.src = "https://genshin.jmp.blue/characters/traveler-anemo/icon"; }}
@@ -526,7 +527,7 @@ export default function LiveChat() {
                             style={{ 
                               fontSize: "9px", 
                               padding: "1px 4px", 
-                              background: msg.game_tag === "Genshin" ? "#0288d1" : "#f57c00",
+                              background: msg.game_tag === "Genshin" ? "#2AA6D6" : "#B23BE0",
                               color: "white",
                               borderRadius: "2px"
                             }}
@@ -577,7 +578,7 @@ export default function LiveChat() {
               type="text"
               maxLength={300}
               className="device-select"
-              style={{ flex: 1, padding: "12px", background: "#111", border: "1px solid var(--hairline-strong)", color: "white" }}
+              style={{ flex: 1, minWidth: 0, padding: "12px", background: "#111", border: "1px solid var(--hairline-strong)", color: "white" }}
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
               placeholder={connectionStatus === "CONNECTED" ? "Type a message... (Press Enter to send)" : "Please configure Supabase connection first..."}

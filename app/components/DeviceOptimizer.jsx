@@ -363,14 +363,13 @@ export default function DeviceOptimizer() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }} className="select-row-grid">
+          <div style={{ display: "grid", gap: "16px" }} className="select-row-grid">
             <div>
               <label className="filter-label" style={{ display: "block", marginBottom: "6px" }}>Select Device Model / Chipset</label>
-              <select 
-                className="search-input" 
-                value={model} 
+              <select
+                className="isp-select"
+                value={model}
                 onChange={(e) => setModel(e.target.value)}
-                style={{ paddingLeft: "12px", background: "white", cursor: "pointer" }}
               >
                 {Object.entries(currentCategoryData.models).map(([key, data]) => (
                   <option key={key} value={key}>
@@ -382,11 +381,10 @@ export default function DeviceOptimizer() {
 
             <div>
               <label className="filter-label" style={{ display: "block", marginBottom: "6px" }}>Select Target Game</label>
-              <select 
-                className="search-input" 
-                value={game} 
+              <select
+                className="isp-select"
+                value={game}
                 onChange={(e) => setGame(e.target.value)}
-                style={{ paddingLeft: "12px", background: "white", cursor: "pointer" }}
               >
                 <option value="genshin">Genshin Impact</option>
                 <option value="wuwa">Wuthering Waves</option>
@@ -408,57 +406,59 @@ export default function DeviceOptimizer() {
             📋 RECOMMENDED GRAPHICS SHEET ({game === "genshin" ? "Genshin" : "WuWa"})
           </h3>
           
-          <table className="tech-table" style={{ marginTop: "12px" }}>
-            <thead>
-              <tr>
-                <th>Setting Parameter</th>
-                <th>Target Value</th>
-                <th>Performance Impact</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Frame Rate Limit</strong></td>
-                <td style={{ color: "var(--primary-dark)", fontWeight: "bold" }}>{config.fps}</td>
-                <td>Critical for CPU thermal stabilization</td>
-              </tr>
-              <tr>
-                <td><strong>Render Resolution</strong></td>
-                <td>{config.resolution}</td>
-                <td>High GPU load factor (highly sensitive)</td>
-              </tr>
-              <tr>
-                <td><strong>Shadow Quality</strong></td>
-                <td>{config.shadows}</td>
-                <td>High VRAM consumption parameter</td>
-              </tr>
-              <tr>
-                <td><strong>Elemental SFX / Particles</strong></td>
-                <td>{config.effects}</td>
-                <td>Affects lag during burst animations</td>
-              </tr>
-              <tr>
-                <td><strong>Character Details</strong></td>
-                <td>{config.sfx}</td>
-                <td>LOD model scaling impact</td>
-              </tr>
-              <tr>
-                <td><strong>Motion Blur</strong></td>
-                <td>{config.blur}</td>
-                <td>Camera movement GPU overhead</td>
-              </tr>
-              <tr>
-                <td><strong>Bloom / HDR Glow</strong></td>
-                <td>{config.bloom}</td>
-                <td>Post-processing effect cost</td>
-              </tr>
-              <tr>
-                <td><strong>Antialiasing / Upscaling</strong></td>
-                <td>{config.upscaling}</td>
-                <td>Reduces edge jaggedness dynamically</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="table-wrapper">
+            <table className="tech-table" style={{ marginTop: 0 }}>
+              <thead>
+                <tr>
+                  <th>Setting Parameter</th>
+                  <th>Target Value</th>
+                  <th>Performance Impact</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Frame Rate Limit</strong></td>
+                  <td style={{ color: "var(--primary-dark)", fontWeight: "bold" }}>{config.fps}</td>
+                  <td>Critical for CPU thermal stabilization</td>
+                </tr>
+                <tr>
+                  <td><strong>Render Resolution</strong></td>
+                  <td>{config.resolution}</td>
+                  <td>High GPU load factor (highly sensitive)</td>
+                </tr>
+                <tr>
+                  <td><strong>Shadow Quality</strong></td>
+                  <td>{config.shadows}</td>
+                  <td>High VRAM consumption parameter</td>
+                </tr>
+                <tr>
+                  <td><strong>Elemental SFX / Particles</strong></td>
+                  <td>{config.effects}</td>
+                  <td>Affects lag during burst animations</td>
+                </tr>
+                <tr>
+                  <td><strong>Character Details</strong></td>
+                  <td>{config.sfx}</td>
+                  <td>LOD model scaling impact</td>
+                </tr>
+                <tr>
+                  <td><strong>Motion Blur</strong></td>
+                  <td>{config.blur}</td>
+                  <td>Camera movement GPU overhead</td>
+                </tr>
+                <tr>
+                  <td><strong>Bloom / HDR Glow</strong></td>
+                  <td>{config.bloom}</td>
+                  <td>Post-processing effect cost</td>
+                </tr>
+                <tr>
+                  <td><strong>Antialiasing / Upscaling</strong></td>
+                  <td>{config.upscaling}</td>
+                  <td>Reduces edge jaggedness dynamically</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Performance Profile Panels */}
@@ -477,7 +477,7 @@ export default function DeviceOptimizer() {
           <div className="guide-panel" style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             <span className="filter-label">THERMAL STRESS RATING</span>
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <span className="body-strong" style={{ fontSize: "20px", color: "red" }}>{config.thermal}</span>
+              <span className="body-strong" style={{ fontSize: "20px", color: "#F87171" }}>{config.thermal}</span>
             </div>
             <p className="caption-sm" style={{ color: "var(--mute)", marginTop: "4px" }}>
               Estimates battery heat risk and potential CPU core throttling over time.
