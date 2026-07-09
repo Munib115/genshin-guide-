@@ -7,24 +7,35 @@
     </linearGradient>
   </defs>
 
-  <!-- Dark tile + gradient hairline (matches the rest of the icon set) -->
+  <!-- Dark tile canvas -->
   <rect x="3" y="3" width="58" height="58" rx="16" fill="#0A0E1A"/>
+  <!-- Glowing brand border -->
   <rect x="3.75" y="3.75" width="56.5" height="56.5" rx="15.25" fill="none" stroke="url(#gu-grad)" stroke-opacity="0.55" stroke-width="1.5"/>
 
-  <!-- Cap band (the part that hugs the head) — drawn first so the board sits on top -->
-  <path d="M18 29 L18 40 Q18 47 32 47 Q46 47 46 40 L46 29 Z" fill="#2C2557"/>
+  <!-- Outer circular tech orbits / scanner lines -->
+  <circle cx="32" cy="32" r="21" fill="none" stroke="url(#gu-grad)" stroke-width="1" stroke-dasharray="3 5" opacity="0.35"/>
+  <circle cx="32" cy="32" r="16" fill="none" stroke="#8B7CFF" stroke-width="1" opacity="0.25" stroke-dasharray="32 8"/>
+  
+  <!-- Sovereign Gacha Wishing Star (outer glow layer) -->
+  <path d="M32 9 Q32 27 50 32 Q32 37 32 55 Q32 37 14 32 Q32 27 32 9 Z" fill="url(#gu-grad)" opacity="0.3" filter="blur(2px)"/>
 
-  <!-- Mortarboard (the flat square top, seen at an angle) -->
-  <path d="M32 13 L58 25 L32 37 L6 25 Z" fill="url(#gu-grad)"/>
-  <!-- Top-facet highlight for a bit of 3D -->
-  <path d="M32 13 L58 25 L32 27 L6 25 Z" fill="#ffffff" fill-opacity="0.14"/>
+  <!-- Sovereign Gacha Wishing Star (main solid layer) -->
+  <path d="M32 11 Q32 27 48 32 Q32 37 32 53 Q32 37 16 32 Q32 27 32 11 Z" fill="url(#gu-grad)"/>
+  
+  <!-- Inner core star cutout for hollow depth effect -->
+  <path d="M32 16 Q32 29 45 32 Q32 35 32 48 Q32 35 19 32 Q32 29 32 16 Z" fill="#0A0E1A"/>
+  
+  <!-- Laser crosshairs aligned to portal core -->
+  <line x1="32" y1="16" x2="32" y2="48" stroke="url(#gu-grad)" stroke-width="1.5" opacity="0.75" stroke-linecap="round"/>
+  <line x1="19" y1="32" x2="45" y2="32" stroke="url(#gu-grad)" stroke-width="1.5" opacity="0.75" stroke-linecap="round"/>
 
-  <!-- Center button -->
-  <circle cx="32" cy="25" r="2.6" fill="#0A0E1A"/>
-  <circle cx="32" cy="25" r="1.2" fill="#7CE0FF"/>
-
-  <!-- Tassel cord draped over the right corner -->
-  <path d="M32 25 L54 26 L52 40" fill="none" stroke="#7CE0FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- Tassel end as a gacha "wish" spark -->
-  <path d="M52 38 C52.8 42 53.8 43.2 57 44 C53.8 44.8 52.8 46 52 49.5 C51.2 46 50.2 44.8 47 44 C50.2 43.2 51.2 42 52 38 Z" fill="url(#gu-grad)"/>
+  <!-- Core Portal Orb -->
+  <circle cx="32" cy="32" r="6.5" fill="#0A0E1A" stroke="#7CE0FF" stroke-width="1.8"/>
+  <circle cx="32" cy="32" r="2.8" fill="#ffffff"/>
+  
+  <!-- Ambient sparks (representing Genshin Cyan & WuWa Magenta) -->
+  <!-- Left Cyan Spark -->
+  <path d="M19 19 Q19 21 21 21 Q19 21 19 23 Q19 21 17 21 Q19 21 19 19 Z" fill="#4CC9F0" opacity="0.8"/>
+  <!-- Right Magenta Spark -->
+  <path d="M45 45 Q45 47 47 47 Q45 47 45 49 Q45 47 43 47 Q45 47 45 45 Z" fill="#E45CFF" opacity="0.8"/>
 </svg>
