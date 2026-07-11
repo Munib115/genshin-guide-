@@ -215,20 +215,7 @@ export default function Home() {
 
   return (
     <div className="bg-light">
-      {/* 1. Utility Bar */}
-      <div className="utility-bar">
-        <div className="container">
-          <div className="utility-item">
-            PORTAL STORAGE: 
-            <span style={{ color: "var(--primary)", fontWeight: "700", marginLeft: "4px" }}>
-              ● LOCAL BROWSER STORAGE ACTIVE (OFFLINE STABLE)
-            </span>
-          </div>
-          <div className="utility-item">
-            REGION: <span className="utility-link">PAKISTAN (PK)</span>
-          </div>
-        </div>
-      </div>
+
 
       {/* 2. Primary Navigation */}
       <nav className="primary-nav">
@@ -313,11 +300,7 @@ export default function Home() {
             </li>
           </ul>
 
-          <div className="nav-actions">
-            <span className="caption-xs" style={{ color: "var(--primary)", border: "1px solid var(--primary)", padding: "4px 8px" }}>
-              V2.1 STATIC
-            </span>
-          </div>
+
 
           {/* Three dots mobile menu toggle */}
           <div className="mobile-menu-container" ref={menuRef}>

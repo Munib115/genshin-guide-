@@ -294,6 +294,7 @@ img {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  position: relative;
 }
 
 .logo {
@@ -328,7 +329,14 @@ img {
   filter: drop-shadow(0 0 8px rgba(76, 201, 240, 0.45));
 }
 
-.nav-links { display: flex; list-style: none; gap: var(--spacing-xl); }
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: var(--spacing-xl);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
 .nav-links a {
   color: var(--on-dark-mute);
   font-size: 15px;
