@@ -416,30 +416,14 @@ export default function Home() {
       </nav>
 
       {/* 3. Hero Section */}
-      <header className="hero-card-dark">
-        <div className="hero-grid-bg" />
-        <div className="container">
-          <div className="hero-content">
-            <div className="hero-text">
-              <span className="hero-badge">SITARA GOONJ · PAKISTAN</span>
-              <h1 className="display-xl hero-title">Complete <span className="accent-cyan">Genshin</span> &amp; <span className="accent-magenta">WuWa</span> Guides</h1>
-              <p className="heading-lg hero-subhead">
-                Premium F2P builds, local server ping guidelines, and custom user note systems. Optimized for mobile and low-spec gaming in Pakistan.
-              </p>
-              <div className="hero-actions">
-                <button className="btn btn-primary" onClick={() => setActiveSection("guides")}>
-                  Browse Guides
-                </button>
-                <button className="btn btn-outline-on-dark" onClick={() => setActiveSection("maps")}>
-                  Open Map
-                </button>
-              </div>
-            </div>
-            
-            <div className="hero-visual">
-              <HeroSpotlight />
-            </div>
-          </div>
+      <header className="hero-card-dark" style={{ padding: "40px 0 60px 0", background: "var(--bg-dark)" }}>
+        <div className="container" style={{ maxWidth: "1200px" }}>
+          <HeroSpotlight 
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            setActiveCategory={setActiveCategory}
+            setActiveSection={setActiveSection}
+          />
         </div>
       </header>
 
