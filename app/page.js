@@ -10,6 +10,7 @@ import LiveChat from "./components/LiveChat";
 import CoopFinder from "./components/CoopFinder";
 import CharacterChat from "./components/CharacterChat";
 import HeroSpotlight from "./components/HeroSpotlight";
+import GiftCodes from "./components/GiftCodes";
 import { fullRoster } from "./data/roster";
 
 // Brand mark (sparkle) — cyan→magenta gradient, matches the favicon/app icon
@@ -298,6 +299,18 @@ export default function Home() {
                 CHARACTER AI
               </a>
             </li>
+            <li>
+              <a
+                href="#codes"
+                className={activeSection === "codes" ? "active" : ""}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveSection("codes");
+                }}
+              >
+                GIFT CODES
+              </a>
+            </li>
           </ul>
 
 
@@ -390,6 +403,19 @@ export default function Home() {
                     }}
                   >
                     CHARACTER AI
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#codes"
+                    className={activeSection === "codes" ? "active" : ""}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("codes");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    GIFT CODES
                   </a>
                 </li>
               </ul>
@@ -638,6 +664,19 @@ export default function Home() {
               <CharacterChat />
             </div>
           </section>
+        ) : activeSection === "codes" ? (
+          /* Gift Codes Section view */
+          <section className="grid-section" id="codes-section">
+            <div className="container">
+              <div className="section-header">
+                <div className="section-info">
+                  <h2 className="heading-md">GIFT CODES & PROMOTIONS</h2>
+                  <span className="result-count">Auto-Syncing with Game Wikis</span>
+                </div>
+              </div>
+              <GiftCodes />
+            </div>
+          </section>
         ) : null}
       </div>
 
@@ -662,8 +701,9 @@ export default function Home() {
                 <li><a href="#optimizer" onClick={(e) => { e.preventDefault(); setActiveSection("optimizer"); }}>Device Optimizer</a></li>
                 <li><a href="#maps" onClick={(e) => { e.preventDefault(); setActiveSection("maps"); }}>Interactive Maps</a></li>
                 <li><a href="#coop" onClick={(e) => { e.preventDefault(); setActiveSection("coop"); }}>Co-Op Finder</a></li>
-                <li><a href="#chat" onClick={(e) => { e.preventDefault(); setActiveSection("chat"); }}>Live Chat</a></li>
+                 <li><a href="#chat" onClick={(e) => { e.preventDefault(); setActiveSection("chat"); }}>Live Chat</a></li>
                 <li><a href="#aichat" onClick={(e) => { e.preventDefault(); setActiveSection("aichat"); }}>Character AI</a></li>
+                <li><a href="#codes" onClick={(e) => { e.preventDefault(); setActiveSection("codes"); }}>Gift Codes</a></li>
                 <li><a href="#optimization-section" onClick={(e) => { e.preventDefault(); setActiveSection("guides"); }}>Ping Checker</a></li>
               </ul>
             </div>
@@ -773,6 +813,16 @@ export default function Home() {
                 <circle cx="15" cy="13.5" r="1.1" />
                 <path d="M9.5 17h5" />
                 <path d="M2 12v4M22 12v4" />
+              </svg>
+            ),
+          },
+          {
+            key: "codes",
+            label: "Codes",
+            icon: (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                <line x1="7" y1="7" x2="7.01" y2="7" />
               </svg>
             ),
           },
