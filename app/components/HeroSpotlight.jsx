@@ -121,12 +121,12 @@ export default function HeroSpotlight({ searchQuery, setSearchQuery, setActiveCa
 
           {/* Left character illustration (Venti) */}
           <div className="char-illustration left">
-            <img src="https://genshin-impact.fandom.com/wiki/Special:FilePath/Venti_Wish.png" alt="Venti" referrerPolicy="no-referrer" />
+            <img src="https://genshin-impact.fandom.com/wiki/Special:FilePath/Venti_Portrait.png" alt="Venti" referrerPolicy="no-referrer" />
           </div>
 
           {/* Right character illustration (Jiyan style) */}
           <div className="char-illustration right">
-            <img src="https://wutheringwaves.fandom.com/wiki/Special:FilePath/Resonator_Jiyan.png" alt="Jiyan" referrerPolicy="no-referrer" />
+            <img src="https://wutheringwaves.fandom.com/wiki/Special:FilePath/Jiyan_Splash_Art.png" alt="Jiyan" referrerPolicy="no-referrer" />
           </div>
 
           {/* Center Main Header and Search Stack */}
@@ -232,8 +232,8 @@ export default function HeroSpotlight({ searchQuery, setSearchQuery, setActiveCa
 
           {/* Central Character Visual Group */}
           <div className="mobile-character-group">
-            <img className="mob-char left" src="https://genshin-impact.fandom.com/wiki/Special:FilePath/Venti_Wish.png" alt="Venti" referrerPolicy="no-referrer" />
-            <img className="mob-char right" src="https://wutheringwaves.fandom.com/wiki/Special:FilePath/Resonator_Jiyan.png" alt="Jiyan" referrerPolicy="no-referrer" />
+            <img className="mob-char left" src="https://genshin-impact.fandom.com/wiki/Special:FilePath/Venti_Portrait.png" alt="Venti" referrerPolicy="no-referrer" />
+            <img className="mob-char right" src="https://wutheringwaves.fandom.com/wiki/Special:FilePath/Jiyan_Splash_Art.png" alt="Jiyan" referrerPolicy="no-referrer" />
           </div>
 
           {/* Stacked Mobile Buttons */}
@@ -371,7 +371,8 @@ export default function HeroSpotlight({ searchQuery, setSearchQuery, setActiveCa
         .char-illustration {
           position: absolute;
           bottom: 0;
-          height: 96%;
+          height: 92%;
+          max-width: 250px;
           z-index: 5;
           pointer-events: none;
           display: flex;
@@ -379,16 +380,17 @@ export default function HeroSpotlight({ searchQuery, setSearchQuery, setActiveCa
         }
         .char-illustration img {
           height: 100%;
+          width: auto;
           object-fit: contain;
           filter: drop-shadow(0 10px 25px rgba(0,0,0,0.55));
         }
 
         .char-illustration.left {
-          left: -40px;
+          left: 15px;
           animation: hoverFloatLeft 6s infinite ease-in-out;
         }
         .char-illustration.right {
-          right: -30px;
+          right: 15px;
           animation: hoverFloatRight 6s infinite ease-in-out;
         }
 
