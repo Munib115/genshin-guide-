@@ -20,237 +20,304 @@ export default function HeroSpotlight({ searchQuery, setSearchQuery, setActiveCa
   };
 
   return (
-    <div className="immersive-hero-wrapper">
-      {/* DESKTOP BROWSER SHOWCASE */}
-      <div className="hero-desktop-layout">
-        <div className="desktop-aspect-container">
-          {/* Live HTML search input styled to cover and align with the image's pre-drawn search bar */}
+    <div className="immersive-hero-container">
+      {/* Background image container scaled slightly to crop out the outer borders (hiding any AI watermarks) */}
+      <div className="hero-bg-image" />
+      <div className="hero-bg-overlay" />
+
+      {/* Central interactive content stack */}
+      <div className="hero-content-stack">
+        <span className="hero-badge">SITARA GOONJ · ستارہ گونج</span>
+        <span className="hero-title-small">MASTER</span>
+        <h1 className="hero-title-large">MASTER YOUR ROSTER.</h1>
+
+        {/* Live Search Capsule */}
+        <div className="search-capsule">
+          <svg className="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4cc9f0" strokeWidth="2.5">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
           <input
             type="text"
-            className="overlay-search-input"
+            placeholder="Search 'Furina build', 'low ping tips'..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search 'Furina build', 'low ping tips'..."
             aria-label="Search character guides"
           />
-
-          {/* Interactive hover overlays on top of the image's browse buttons */}
-          <button
-            className="overlay-click-btn genshin"
-            onClick={handleBrowseGenshin}
-            aria-label="Browse Genshin Impact Guides"
-          />
-          <button
-            className="overlay-click-btn wuwa"
-            onClick={handleBrowseWuWa}
-            aria-label="Browse Wuthering Waves Guides"
-          />
+          {/* Animated click pointer indicator */}
+          <svg className="search-pointer-arrow" viewBox="0 0 24 24" fill="white" width="16" height="16">
+            <path d="M4 2 L20 11 L13 13 L11 20 Z" />
+          </svg>
         </div>
-      </div>
 
-      {/* MOBILE SMARTPHONE SHOWCASE */}
-      <div className="hero-mobile-layout">
-        <div className="mobile-aspect-container">
-          {/* Live HTML search input for mobile */}
-          <input
-            type="text"
-            className="overlay-search-input mobile"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search character builds..."
-            aria-label="Search character guides mobile"
-          />
+        {/* Action buttons flanked by circular character avatars */}
+        <div className="action-buttons-row">
+          <div className="action-btn-wrapper">
+            <div className="avatar-frame genshin-border">
+              <img src="https://genshin-impact.fandom.com/wiki/Special:FilePath/Venti_Icon.png" alt="" referrerPolicy="no-referrer" />
+            </div>
+            <button className="glass-pill-btn" onClick={handleBrowseGenshin}>
+              Browse Genshin
+            </button>
+          </div>
 
-          {/* Stacked mobile browse button overlays */}
-          <button
-            className="overlay-click-btn-mob genshin-mob"
-            onClick={handleBrowseGenshin}
-            aria-label="Browse Genshin Impact Guides Mobile"
-          />
-          <button
-            className="overlay-click-btn-mob wuwa-mob"
-            onClick={handleBrowseWuWa}
-            aria-label="Browse Wuthering Waves Guides Mobile"
-          />
+          <div className="action-btn-wrapper">
+            <button className="glass-pill-btn" onClick={handleBrowseWuWa}>
+              Browse WuWa
+            </button>
+            <div className="avatar-frame wuwa-border">
+              <img src="https://wutheringwaves.fandom.com/wiki/Special:FilePath/Resonator_Jiyan.png" alt="" referrerPolicy="no-referrer" />
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="showcase-caption">
-        A showcase of unique hero section designs for Sitara Goonj.
       </div>
 
       <style>{`
-        .immersive-hero-wrapper {
+        .immersive-hero-container {
+          position: relative;
           width: 100%;
+          height: 520px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          background: #060913;
+        }
+
+        /* Full-bleed background image with scale to crop out edge watermarks/AI logos */
+        .hero-bg-image {
+          position: absolute;
+          inset: 0;
+          background-image: url("/hero-clean-bg.png");
+          background-size: cover;
+          background-position: center 65%;
+          transform: scale(1.05); /* Crops out the outer 5% of pixels, completely hiding edge marks */
+          z-index: 1;
+        }
+
+        /* Layered gradients to fade background to black at the bottom and sides */
+        .hero-bg-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(180deg, rgba(6, 9, 19, 0.3) 0%, rgba(6, 9, 19, 0.6) 60%, #060913 100%),
+                      radial-gradient(ellipse at center, transparent 30%, rgba(6, 9, 19, 0.7) 100%);
+          z-index: 2;
+        }
+
+        /* Central HTML content stack */
+        .hero-content-stack {
+          position: relative;
+          z-index: 10;
           display: flex;
           flex-direction: column;
           align-items: center;
-        }
-
-        /* DESKTOP VIEWPORT */
-        .hero-desktop-layout {
+          max-width: 680px;
           width: 100%;
-          display: block;
+          padding: 0 24px;
+          transform: translateY(-5px);
         }
 
-        .desktop-aspect-container {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 1024 / 473;
-          background-image: url("/hero-desktop.png");
-          background-size: cover;
-          background-position: center;
-          overflow: hidden;
-        }
-
-        /* Precise Overlay Inputs (Desktop) */
-        .overlay-search-input {
-          position: absolute;
-          top: 52.8%;
-          left: 49.9%;
-          transform: translate(-50%, -50%);
-          width: 35.8%;
-          height: 7.6%;
-          background: #080a12;
-          border: none;
-          outline: none;
-          color: white;
+        .hero-badge {
           font-family: inherit;
-          font-size: 1.35vw;
-          font-weight: 500;
-          padding: 0 1vw 0 3.2vw;
-          box-sizing: border-box;
-          border-radius: 30px;
-          cursor: text;
-        }
-
-        .overlay-search-input::placeholder {
-          color: rgba(255, 255, 255, 0.45);
-        }
-
-        /* Adjust search text size for large desktop screens */
-        @media (min-width: 1200px) {
-          .overlay-search-input {
-            font-size: 14.5px;
-            padding-left: 36px;
-          }
-        }
-
-        .overlay-click-btn {
-          position: absolute;
-          top: 67.2%;
-          height: 8.5%;
-          background: rgba(255, 255, 255, 0);
-          border: none;
-          border-radius: 30px;
-          cursor: pointer;
-          transition: background-color 0.25s ease, box-shadow 0.25s ease;
-          box-shadow: 0 0 0 rgba(76, 201, 240, 0);
-        }
-
-        .overlay-click-btn.genshin {
-          left: 35.6%;
-          width: 12.8%;
-        }
-
-        .overlay-click-btn.wuwa {
-          left: 51.6%;
-          width: 12.8%;
-        }
-
-        .overlay-click-btn:hover {
-          background: rgba(255, 255, 255, 0.06);
-          box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        }
-
-        .overlay-click-btn.genshin:hover {
-          box-shadow: 0 0 15px rgba(76, 201, 240, 0.4);
-        }
-
-        .overlay-click-btn.wuwa:hover {
-          box-shadow: 0 0 15px rgba(228, 92, 255, 0.4);
-        }
-
-        /* MOBILE VIEWPORT */
-        .hero-mobile-layout {
-          display: none;
-          width: 100%;
-        }
-
-        .mobile-aspect-container {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 571 / 1024;
-          background-image: url("/hero-mobile.png");
-          background-size: cover;
-          background-position: center;
-          overflow: hidden;
-        }
-
-        .overlay-search-input.mobile {
-          position: absolute;
-          top: 30.1%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 65%;
-          height: 3.2%;
-          background: #080a12;
-          border: none;
-          outline: none;
-          color: white;
-          font-size: 13px;
-          padding: 0 10px 0 28px;
+          font-size: 11px;
+          font-weight: 700;
+          color: rgba(255, 255, 255, 0.5);
+          letter-spacing: 2px;
+          margin-bottom: 24px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          padding: 6px 14px;
           border-radius: 20px;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-title-small {
+          font-size: 13px;
+          font-weight: 800;
+          letter-spacing: 8px;
+          margin-bottom: 8px;
+          background: linear-gradient(90deg, #4cc9f0, #e45cff);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title-large {
+          font-size: 48px;
+          font-weight: 900;
+          color: white;
+          letter-spacing: -1.5px;
+          margin: 0 0 28px 0;
+          text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+          text-align: center;
+        }
+
+        /* Glowing Capsule Search Bar */
+        .search-capsule {
+          display: flex;
+          align-items: center;
+          background: rgba(8, 11, 20, 0.85);
+          backdrop-filter: blur(12px);
+          border: 2px solid #4cc9f0;
+          box-shadow: 0 0 25px rgba(76, 201, 240, 0.4);
+          border-radius: 40px;
+          padding: 0 20px;
+          height: 52px;
+          width: 100%;
+          max-width: 460px;
+          position: relative;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
           box-sizing: border-box;
         }
 
-        .overlay-search-input.mobile::placeholder {
-          color: rgba(255, 255, 255, 0.45);
+        .search-capsule:focus-within {
+          border-color: #e45cff;
+          box-shadow: 0 0 25px rgba(228, 92, 255, 0.45);
+          transform: translateY(-1px);
         }
 
-        .overlay-click-btn-mob {
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 77%;
-          height: 4.8%;
+        .search-icon {
+          flex-shrink: 0;
+          opacity: 0.85;
+        }
+
+        .search-capsule input {
+          flex-grow: 1;
           background: transparent;
           border: none;
+          outline: none;
+          color: white;
+          font-size: 15px;
+          font-weight: 500;
+          margin-left: 12px;
+          width: 100%;
+          font-family: inherit;
+        }
+
+        .search-capsule input::placeholder {
+          color: rgba(255, 255, 255, 0.4);
+        }
+
+        .search-pointer-arrow {
+          position: absolute;
+          right: -15px;
+          bottom: -15px;
+          pointer-events: none;
+          filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+          animation: cursorHoverPulse 3s infinite ease-in-out;
+        }
+
+        @keyframes cursorHoverPulse {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-3px, -3px) scale(0.92); }
+        }
+
+        /* Buttons Row styling */
+        .action-buttons-row {
+          display: flex;
+          gap: 24px;
+          align-items: center;
+          margin-top: 24px;
+        }
+
+        .action-btn-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .avatar-frame {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          overflow: hidden;
+          border: 2px solid;
+          background: #080b13;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .avatar-frame.genshin-border {
+          border-color: #4cc9f0;
+        }
+
+        .avatar-frame.wuwa-border {
+          border-color: #e45cff;
+        }
+
+        .avatar-frame img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .glass-pill-btn {
+          background: rgba(17, 22, 38, 0.8);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: white;
           border-radius: 30px;
+          padding: 10px 22px;
+          font-size: 14px;
+          font-weight: 600;
           cursor: pointer;
-          transition: background-color 0.2s ease;
+          transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
         }
 
-        .overlay-click-btn-mob.genshin-mob {
-          top: 76.4%;
+        .glass-pill-btn:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.35);
+          transform: translateY(-1.5px);
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
         }
 
-        .overlay-click-btn-mob.wuwa-mob {
-          top: 83.2%;
-        }
-
-        .overlay-click-btn-mob:hover {
-          background: rgba(255, 255, 255, 0.08);
-        }
-
-        .showcase-caption {
-          margin-top: 14px;
-          font-size: 13.5px;
-          color: rgba(255, 255, 255, 0.45);
-          text-align: center;
-          letter-spacing: 0.5px;
-        }
-
-        /* RESPONSIVE DISPLAY TRANSITION */
+        /* RESPONSIVE QUERIES */
         @media (max-width: 767px) {
-          .hero-desktop-layout {
+          .immersive-hero-container {
+            height: 480px;
+          }
+
+          .hero-bg-image {
+            background-position: center 60%;
+          }
+
+          .hero-title-large {
+            font-size: 32px;
+            margin-bottom: 20px;
+          }
+
+          .search-capsule {
+            height: 46px;
+            padding: 0 16px;
+          }
+
+          .search-capsule input {
+            font-size: 13.5px;
+          }
+
+          .search-pointer-arrow {
             display: none;
           }
-          .hero-mobile-layout {
-            display: block;
+
+          .action-buttons-row {
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
           }
-          .showcase-caption {
-            display: none;
+
+          .action-btn-wrapper {
+            width: 100%;
+            justify-content: center;
+          }
+
+          .glass-pill-btn {
+            width: 100%;
+            max-width: 240px;
+            padding: 8px 20px;
+            font-size: 13px;
           }
         }
       `}</style>
