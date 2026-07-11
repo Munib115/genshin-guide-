@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Gacha Ustaad">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Sitara Goonj">
   <defs>
     <linearGradient id="gu-grad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#4CC9F0"/>
@@ -12,30 +12,30 @@
   <!-- Glowing brand border -->
   <rect x="3.75" y="3.75" width="56.5" height="56.5" rx="15.25" fill="none" stroke="url(#gu-grad)" stroke-opacity="0.55" stroke-width="1.5"/>
 
-  <!-- Outer circular tech orbits / scanner lines -->
-  <circle cx="32" cy="32" r="21" fill="none" stroke="url(#gu-grad)" stroke-width="1" stroke-dasharray="3 5" opacity="0.35"/>
-  <circle cx="32" cy="32" r="16" fill="none" stroke="#8B7CFF" stroke-width="1" opacity="0.25" stroke-dasharray="32 8"/>
+  <!-- Outer circular tech orbits / scanner lines (cyber background) -->
+  <circle cx="32" cy="32" r="23" fill="none" stroke="url(#gu-grad)" stroke-width="0.8" stroke-dasharray="3 5" opacity="0.25"/>
+  <circle cx="32" cy="32" r="18" fill="none" stroke="#8B7CFF" stroke-width="0.8" opacity="0.15" stroke-dasharray="24 6"/>
   
-  <!-- Sovereign Gacha Wishing Star (outer glow layer) -->
-  <path d="M32 9 Q32 27 50 32 Q32 37 32 55 Q32 37 14 32 Q32 27 32 9 Z" fill="url(#gu-grad)" opacity="0.3" filter="blur(2px)"/>
-
-  <!-- Sovereign Gacha Wishing Star (main solid layer) -->
-  <path d="M32 11 Q32 27 48 32 Q32 37 32 53 Q32 37 16 32 Q32 27 32 11 Z" fill="url(#gu-grad)"/>
+  <!-- Neon glow layers underneath (Goonj resonance waves) -->
+  <path d="M20 22 A 14 14 0 0 0 20 42" stroke="url(#gu-grad)" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.35" filter="blur(2px)"/>
+  <path d="M44 22 A 14 14 0 0 1 44 42" stroke="url(#gu-grad)" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.35" filter="blur(2px)"/>
+  <path d="M12 14 A 25 25 0 0 0 12 50" stroke="url(#gu-grad)" stroke-width="6.2" stroke-linecap="round" fill="none" opacity="0.25" filter="blur(2px)"/>
+  <path d="M52 14 A 25 25 0 0 1 52 50" stroke="url(#gu-grad)" stroke-width="6.2" stroke-linecap="round" fill="none" opacity="0.25" filter="blur(2px)"/>
+  <path d="M32 16 L37 32 L32 48 L27 32 Z" fill="url(#gu-grad)" opacity="0.3" filter="blur(2px)"/>
   
-  <!-- Inner core star cutout for hollow depth effect -->
-  <path d="M32 16 Q32 29 45 32 Q32 35 32 48 Q32 35 19 32 Q32 29 32 16 Z" fill="#0A0E1A"/>
+  <!-- Solid neon star & resonance waves (Sitara Goonj) -->
+  <path d="M20 22 A 14 14 0 0 0 20 42" stroke="url(#gu-grad)" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+  <path d="M44 22 A 14 14 0 0 1 44 42" stroke="url(#gu-grad)" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+  <path d="M12 14 A 25 25 0 0 0 12 50" stroke="url(#gu-grad)" stroke-width="3.2" stroke-linecap="round" fill="none" opacity="0.65"/>
+  <path d="M52 14 A 25 25 0 0 1 52 50" stroke="url(#gu-grad)" stroke-width="3.2" stroke-linecap="round" fill="none" opacity="0.65"/>
   
-  <!-- Laser crosshairs aligned to portal core -->
-  <line x1="32" y1="16" x2="32" y2="48" stroke="url(#gu-grad)" stroke-width="1.5" opacity="0.75" stroke-linecap="round"/>
-  <line x1="19" y1="32" x2="45" y2="32" stroke="url(#gu-grad)" stroke-width="1.5" opacity="0.75" stroke-linecap="round"/>
-
-  <!-- Core Portal Orb -->
-  <circle cx="32" cy="32" r="6.5" fill="#0A0E1A" stroke="#7CE0FF" stroke-width="1.8"/>
-  <circle cx="32" cy="32" r="2.8" fill="#ffffff"/>
+  <!-- Central Diamond Star & Portal Core -->
+  <path d="M32 16 L37 32 L32 48 L27 32 Z" fill="url(#gu-grad)"/>
+  <circle cx="32" cy="32" r="4" fill="#FFFFFF"/>
   
   <!-- Ambient sparks (representing Genshin Cyan & WuWa Magenta) -->
   <!-- Left Cyan Spark -->
-  <path d="M19 19 Q19 21 21 21 Q19 21 19 23 Q19 21 17 21 Q19 21 19 19 Z" fill="#4CC9F0" opacity="0.8"/>
+  <path d="M17 17 Q17 19 19 19 Q17 19 17 21 Q17 19 15 19 Q17 19 17 17 Z" fill="#4CC9F0" opacity="0.85"/>
   <!-- Right Magenta Spark -->
-  <path d="M45 45 Q45 47 47 47 Q45 47 45 49 Q45 47 43 47 Q45 47 45 45 Z" fill="#E45CFF" opacity="0.8"/>
+  <path d="M47 47 Q47 49 49 49 Q47 49 47 51 Q47 49 45 49 Q47 49 47 47 Z" fill="#E45CFF" opacity="0.85"/>
 </svg>

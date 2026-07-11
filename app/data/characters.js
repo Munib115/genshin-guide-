@@ -18,8 +18,8 @@ export const characterDatabase = [
     weapon: "Catalyst",
     role: "Main DPS",
     description: "A professional guide from Natlan's People of the Springs who surfs on her Sharky Surfboard, dealing massive Hydro damage based on her Max HP.",
-    icon: "https://genshin.jmp.blue/characters/mualani/icon",
-    splash: "https://genshin.jmp.blue/characters/mualani/gacha-splash",
+    icon: "https://genshin-impact.fandom.com/wiki/Special:FilePath/Mualani_Icon.png",
+    splash: "https://genshin-impact.fandom.com/wiki/Special:FilePath/Mualani_Wish.png",
     bestWeapon: {
       name: "Surf's Up",
       rarity: 5,
@@ -218,8 +218,8 @@ export const characterDatabase = [
     weapon: "Catalyst",
     role: "Dendro Enabler / Sub-DPS",
     description: "The Lesser Lord Kusanali, Nahida binds enemies with her Elemental Skill and triggers massive Dendro reactions.",
-    icon: "https://genshin.jmp.blue/characters/nahida/icon",
-    splash: "https://genshin.jmp.blue/characters/nahida/gacha-splash",
+    icon: "https://genshin-impact.fandom.com/wiki/Special:FilePath/Nahida_Icon.png",
+    splash: "https://genshin-impact.fandom.com/wiki/Special:FilePath/Nahida_Wish.png",
     bestWeapon: {
       name: "A Thousand Floating Dreams",
       rarity: 5,
@@ -942,8 +942,8 @@ export const characterDatabase = [
     weapon: "Sword",
     role: "Main DPS",
     description: "The main protagonist of Wuthering Waves, wielding a sword imbued with dark Havoc energy.",
-    icon: "https://wutheringwaves.fandom.com/wiki/Special:FilePath/Resonator_Rover_F.png",
-    splash: "https://wutheringwaves.fandom.com/wiki/Special:FilePath/Resonator_Rover_F.png",
+    icon: "https://wutheringwaves.fandom.com/wiki/Special:FilePath/Resonator_Female_Rover.png",
+    splash: "https://wutheringwaves.fandom.com/wiki/Special:FilePath/Rover_Female_Portrait.png",
     bestWeapon: {
       name: "Emerald of Genesis",
       rarity: 5,

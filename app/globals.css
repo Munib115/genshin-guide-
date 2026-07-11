@@ -1722,6 +1722,77 @@ img {
 }
 
 /* ==========================================================================
+   CO-OP FINDER & LFG STYLING
+   ========================================================================== */
+
+.coop-layout {
+  animation: fadeIn var(--transition-normal);
+}
+
+.coop-form-card {
+  background: var(--glass-strong);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--rounded-sm);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.coop-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+@media (max-width: 960px) {
+  .coop-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.coop-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 480px) {
+  .coop-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.coop-post-card {
+  border: 1px solid var(--hairline);
+  background: var(--glass-strong);
+  border-radius: var(--rounded-sm);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.coop-post-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--glass-border-strong);
+  box-shadow: var(--shadow-card);
+}
+
+.coop-desc {
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 2px solid var(--hairline-strong);
+  padding: 8px 12px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  border-radius: var(--rounded-xs);
+  min-height: 54px;
+}
+
+
+/* ==========================================================================
    MOTION SAFETY
    ========================================================================== */
 

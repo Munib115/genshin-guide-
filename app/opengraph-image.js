@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Gacha Ustaad — Genshin Impact & Wuthering Waves Guides Pakistan";
+export const alt = "Sitara Goonj — Genshin Impact & Wuthering Waves Guides Pakistan";
 
 // Branded social share card (Open Graph / Twitter), generated at build time so
 // there are no fragile external hotlinked images.
@@ -34,10 +34,10 @@ export default function OpengraphImage() {
               background: "linear-gradient(135deg, #4CC9F0, #E45CFF)",
             }}
           >
-            <div style={{ display: "flex", fontSize: 46, fontWeight: 800, color: "#0A0E1A" }}>GU</div>
+            <div style={{ display: "flex", fontSize: 46, fontWeight: 800, color: "#0A0E1A" }}>SG</div>
           </div>
           <div style={{ display: "flex", fontSize: 38, fontWeight: 700, color: "#93A0B8", letterSpacing: 3 }}>
-            GACHA USTAAD · PK
+            SITARA GOONJ · PK
           </div>
         </div>
 

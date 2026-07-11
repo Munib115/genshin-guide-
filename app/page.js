@@ -7,6 +7,7 @@ import PingSimulator from "./components/PingSimulator";
 import InteractiveMaps from "./components/InteractiveMaps";
 import DeviceOptimizer from "./components/DeviceOptimizer";
 import LiveChat from "./components/LiveChat";
+import CoopFinder from "./components/CoopFinder";
 import CharacterChat from "./components/CharacterChat";
 import HeroSpotlight from "./components/HeroSpotlight";
 import { fullRoster } from "./data/roster";
@@ -22,9 +23,66 @@ function LogoMark() {
           <stop offset="1" stopColor="#E45CFF" />
         </linearGradient>
       </defs>
+      
+      {/* Radiating Resonance Soundwaves Glow (Goonj) */}
       <path
-        d="M12 2 C13 9.4 14.6 11 22 12 C14.6 13 13 14.6 12 22 C11 14.6 9.4 13 2 12 C9.4 11 11 9.4 12 2 Z"
+        d="M7 8 A 5.5 5.5 0 0 0 7 16"
+        stroke="url(#guLogoGrad)"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.35"
+        filter="blur(1px)"
+      />
+      <path
+        d="M17 8 A 5.5 5.5 0 0 1 17 16"
+        stroke="url(#guLogoGrad)"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.35"
+        filter="blur(1px)"
+      />
+      
+      {/* Solid central diamond star & white portal core (Sitara) */}
+      <path
+        d="M12 6 L14 12 L12 18 L10 12 Z"
         fill="url(#guLogoGrad)"
+      />
+      <circle cx="12" cy="12" r="1.5" fill="#FFFFFF" />
+
+      {/* Radiating Resonance Soundwaves Solid (Goonj) */}
+      <path
+        d="M7 8 A 5.5 5.5 0 0 0 7 16"
+        stroke="url(#guLogoGrad)"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M17 8 A 5.5 5.5 0 0 1 17 16"
+        stroke="url(#guLogoGrad)"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        fill="none"
+      />
+      
+      {/* Outer faint expanding echo waves */}
+      <path
+        d="M4 5 A 9.5 9.5 0 0 0 4 19"
+        stroke="url(#guLogoGrad)"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.4"
+      />
+      <path
+        d="M20 5 A 9.5 9.5 0 0 1 20 19"
+        stroke="url(#guLogoGrad)"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        fill="none"
+        opacity="0.4"
       />
     </svg>
   );
@@ -177,7 +235,7 @@ export default function Home() {
         <div className="container">
           <a href="#" className="logo" onClick={(e) => { e.preventDefault(); setActiveSection("guides"); setMobileMenuOpen(false); }}>
             <LogoMark />
-            GACHA <span>USTAAD</span>
+            SITARA <span>GOONJ</span>
           </a>
           
           <ul className="nav-links">
@@ -215,6 +273,18 @@ export default function Home() {
                 }}
               >
                 INTERACTIVE MAPS
+              </a>
+            </li>
+            <li>
+              <a
+                href="#coop"
+                className={activeSection === "coop" ? "active" : ""}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveSection("coop");
+                }}
+              >
+                CO-OP FINDER
               </a>
             </li>
             <li>
@@ -302,6 +372,19 @@ export default function Home() {
                 </li>
                 <li>
                   <a
+                    href="#coop"
+                    className={activeSection === "coop" ? "active" : ""}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveSection("coop");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    CO-OP FINDER
+                  </a>
+                </li>
+                <li>
+                  <a
                     href="#chat"
                     className={activeSection === "chat" ? "active" : ""}
                     onClick={(e) => {
@@ -338,7 +421,7 @@ export default function Home() {
         <div className="container">
           <div className="hero-content">
             <div className="hero-text">
-              <span className="hero-badge">GACHA USTAAD · PAKISTAN</span>
+              <span className="hero-badge">SITARA GOONJ · PAKISTAN</span>
               <h1 className="display-xl hero-title">Complete <span className="accent-cyan">Genshin</span> &amp; <span className="accent-magenta">WuWa</span> Guides</h1>
               <p className="heading-lg hero-subhead">
                 Premium F2P builds, local server ping guidelines, and custom user note systems. Optimized for mobile and low-spec gaming in Pakistan.
@@ -551,6 +634,19 @@ export default function Home() {
               <InteractiveMaps />
             </div>
           </section>
+        ) : activeSection === "coop" ? (
+          /* Co-Op Finder Section view */
+          <section className="grid-section" id="coop-section">
+            <div className="container">
+              <div className="section-header">
+                <div className="section-info">
+                  <h2 className="heading-md">TEAMS & CO-OP FINDER</h2>
+                  <span className="result-count">Live Matchmaking Active</span>
+                </div>
+              </div>
+              <CoopFinder />
+            </div>
+          </section>
         ) : activeSection === "chat" ? (
           /* Live Chat Section view */
           <section className="grid-section" id="chat-section">
@@ -564,7 +660,7 @@ export default function Home() {
               <LiveChat />
             </div>
           </section>
-        ) : (
+        ) : activeSection === "aichat" ? (
           /* Character AI Chatbot Section view */
           <section className="grid-section" id="aichat-section">
             <div className="container">
@@ -577,7 +673,7 @@ export default function Home() {
               <CharacterChat />
             </div>
           </section>
-        )}
+        ) : null}
       </div>
 
       {/* 5. Footer */}
@@ -587,10 +683,10 @@ export default function Home() {
             <div className="footer-column" style={{ gridColumn: "span 2" }}>
               <div className="logo" style={{ color: "white" }}>
                 <LogoMark />
-                GACHA <span>USTAAD</span>
+                SITARA <span>GOONJ</span>
               </div>
               <p className="body-sm" style={{ color: "var(--on-dark-mute)", marginTop: "8px" }}>
-                Gacha Ustaad (گچا اُستاد) is Pakistan&apos;s home for Genshin Impact and Wuthering Waves build guides — F2P builds, best weapons &amp; artifacts, team comps, and local ISP ping optimization.
+                Sitara Goonj (ستارہ گونج) is Pakistan&apos;s home for Genshin Impact and Wuthering Waves build guides — F2P builds, best weapons &amp; artifacts, team comps, and local ISP ping optimization.
               </p>
             </div>
             
@@ -600,6 +696,7 @@ export default function Home() {
                 <li><a href="#guides" onClick={(e) => { e.preventDefault(); setActiveSection("guides"); }}>Build Guides</a></li>
                 <li><a href="#optimizer" onClick={(e) => { e.preventDefault(); setActiveSection("optimizer"); }}>Device Optimizer</a></li>
                 <li><a href="#maps" onClick={(e) => { e.preventDefault(); setActiveSection("maps"); }}>Interactive Maps</a></li>
+                <li><a href="#coop" onClick={(e) => { e.preventDefault(); setActiveSection("coop"); }}>Co-Op Finder</a></li>
                 <li><a href="#chat" onClick={(e) => { e.preventDefault(); setActiveSection("chat"); }}>Live Chat</a></li>
                 <li><a href="#aichat" onClick={(e) => { e.preventDefault(); setActiveSection("aichat"); }}>Character AI</a></li>
                 <li><a href="#optimization-section" onClick={(e) => { e.preventDefault(); setActiveSection("guides"); }}>Ping Checker</a></li>
@@ -624,7 +721,7 @@ export default function Home() {
 
           <div className="footer-bottom">
             <div className="legal-bar">
-              © {new Date().getFullYear()} GACHA USTAAD (گچا اُستاد). THIS PORTAL IS AN INDEPENDENT FAN SITE. ALL ASSETS ARE COPYRIGHT OF COGNOSPHERE (HOYOVERSE) & KURO GAMES. Genshin Impact character data &amp; icons sourced from the{" "}
+              © {new Date().getFullYear()} SITARA GOONJ (ستارہ گونج). THIS PORTAL IS AN INDEPENDENT FAN SITE. ALL ASSETS ARE COPYRIGHT OF COGNOSPHERE (HOYOVERSE) & KURO GAMES. Genshin Impact character data &amp; icons sourced from the{" "}
               <a href="https://genshin-impact.fandom.com/wiki/Character/List" target="_blank" rel="noopener noreferrer" style={{ color: "var(--on-dark-mute)", textDecoration: "underline" }}>Genshin Impact Wiki</a>, available under CC BY-SA 3.0.
             </div>
             <ul className="social-links">
@@ -675,6 +772,18 @@ export default function Home() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                 <circle cx="12" cy="10" r="3" />
+              </svg>
+            ),
+          },
+          {
+            key: "coop",
+            label: "Co-Op",
+            icon: (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
             ),
           },
