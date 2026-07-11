@@ -416,15 +416,13 @@ export default function Home() {
       </nav>
 
       {/* 3. Hero Section */}
-      <header className="hero-card-dark" style={{ padding: "40px 0 60px 0", background: "var(--bg-dark)" }}>
-        <div className="container" style={{ maxWidth: "1200px" }}>
-          <HeroSpotlight 
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            setActiveCategory={setActiveCategory}
-            setActiveSection={setActiveSection}
-          />
-        </div>
+      <header style={{ padding: "0", background: "var(--bg-dark)", overflow: "hidden", width: "100%" }}>
+        <HeroSpotlight 
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          setActiveCategory={setActiveCategory}
+          setActiveSection={setActiveSection}
+        />
       </header>
 
       {/* 4. MAIN BODY DOCK (Switches sections based on Active Nav link) */}
